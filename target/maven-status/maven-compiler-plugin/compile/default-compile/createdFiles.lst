@@ -1,0 +1,12 @@
+mvc\codejava\entity\User.class
+mvc\codejava\service\UserDetailsServiceImpl.class
+mvc\codejava\ProductManagerApplication.class
+mvc\codejava\entity\Role.class
+mvc\codejava\configuration\MvcConfig.class
+mvc\codejava\repository\UserRepository.class
+mvc\codejava\entity\Product.class
+mvc\codejava\service\ProductService.class
+mvc\codejava\controller\AppController.class
+mvc\codejava\repository\ProductRepository.class
+mvc\codejava\configuration\MyUserDetails.class
+mvc\codejava\configuration\WebSecurityConfig.class
