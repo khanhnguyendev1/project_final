@@ -1,78 +1,99 @@
 package mvc.codejava.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
-	@Id
-	@Column(name = "user_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String username;
-	private String password;
-	private boolean enabled;
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "users_roles",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "role_id")
-			)
-	private Set<Role> roles = new HashSet<>(); 
+    private String fullName;
+    private String dateOfBirth;
+    private String address;
+    private String phoneNumber;
+    private String email;
+    private String password;
 
-	public Long getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ShippingAddress> shippingAddresses;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @OneToMany(mappedBy = "user")
+    private List<UserRole> userRoles;
 
-	public String getUsername() {
-		return username;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public Set<Role> getRoles() {
-		return roles;
-	}
+    public String getFullName() {
+        return fullName;
+    }
 
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}	
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public List<ShippingAddress> getShippingAddresses() {
+        return shippingAddresses;
+    }
+
+    public void setShippingAddresses(List<ShippingAddress> shippingAddresses) {
+        this.shippingAddresses = shippingAddresses;
+    }
+
+    public List<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
 }

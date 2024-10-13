@@ -1,61 +1,87 @@
 package mvc.codejava.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "product")
 public class Product {
-	private Long id;
-	private String name;
-	private String brand;
-	private String madein;
-	private float price;
 
-	public Product() {
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getId() {
-		return id;
-	}
+    private String name;
+    private String price;
+    private String description;
+    private String images;
+    private int stock;
+    private String brand;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-	public String getName() {
-		return name;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getBrand() {
-		return brand;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getMadein() {
-		return madein;
-	}
+    public String getPrice() {
+        return price;
+    }
 
-	public void setMadein(String madein) {
-		this.madein = madein;
-	}
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
-	public float getPrice() {
-		return price;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setPrice(float price) {
-		this.price = price;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

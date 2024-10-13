@@ -3,8 +3,8 @@ package mvc.codejava.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

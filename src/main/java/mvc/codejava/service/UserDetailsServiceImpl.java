@@ -1,8 +1,6 @@
 package mvc.codejava.service;
 
-import mvc.codejava.entity.Customer;
 import mvc.codejava.entity.User;
-import mvc.codejava.repository.CustomerRepository;
 import mvc.codejava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,17 +15,17 @@ import java.util.Collections;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	private CustomerRepository customerRepository;
+	private UserRepository userRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		Customer customer = customerRepository.findByEmail(email)
-				.orElseThrow(() -> new UsernameNotFoundException("Customer not found"));
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 		return new org.springframework.security.core.userdetails.User(
-				customer.getEmail(),
-				customer.getPassword(),
-				Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+				user.getEmail(),
+				user.getPassword(),
+				Collections.singletonList(new SimpleGrantedAuthority("USER"))
 		);
 	}
 

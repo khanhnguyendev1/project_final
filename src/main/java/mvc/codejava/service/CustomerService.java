@@ -1,7 +1,7 @@
 package mvc.codejava.service;
 
-import mvc.codejava.entity.Customer;
-import mvc.codejava.repository.CustomerRepository;
+import mvc.codejava.entity.User;
+import mvc.codejava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,20 +12,20 @@ import java.util.Optional;
 public class CustomerService {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public Customer register(Customer customer) {
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        return customerRepository.save(customer);
+    public User register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
-    public Optional<Customer> login(String email, String password) {
-        Optional<Customer> customer = customerRepository.findByEmail(email);
-        if (customer.isPresent() && passwordEncoder.matches(password, customer.get().getPassword())) {
-            return customer;
+    public Optional<User> login(String email, String password) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+            return user;
         }
         return Optional.empty();
     }

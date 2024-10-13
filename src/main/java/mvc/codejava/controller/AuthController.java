@@ -1,6 +1,6 @@
 package mvc.codejava.controller;
 
-import mvc.codejava.entity.Customer;
+import mvc.codejava.entity.User;
 import mvc.codejava.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,15 +17,14 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("customer", new Customer());
+        model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerCustomer(@ModelAttribute Customer customer, Model model) {
-        // Kiểm tra email đã tồn tại chưa
-        if (customerService.register(customer) != null) {
-            return "redirect:/login"; // Chuyển tới trang đăng nhập sau khi đăng ký thành công
+    public String registerCustomer(@ModelAttribute User user, Model model) {
+        if (customerService.register(user) != null) {
+            return "redirect:/login";
         }
         model.addAttribute("error", "Email đã tồn tại");
         return "register";
