@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách mã giảm giá</title>
+</head>
+<body>
+<h1>Danh sách mã giảm giá</h1>
+<a href="/coupons/add">Thêm mã giảm giá mới</a>
+<table>
+    <thead>
+    <tr>
+        <th>Mã</th>
+        <th>Giảm giá</th>
+        <th>Ngày hết hạn</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="coupon : ${coupons}">
+        <td th:text="${coupon.code}">Mã</td>
+        <td th:text="${coupon.discount}">Giảm giá</td>
+        <td th:text="${#dates.format(coupon.expiryDate, 'dd/MM/yyyy')}">Ngày hết hạn</td>
+        <td>
+            <a th:href="@{/coupons/edit/{id}(id=${coupon.id})}">Sửa</a>
+            <a th:href="@{/coupons/delete/{id}(id=${coupon.id})}">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

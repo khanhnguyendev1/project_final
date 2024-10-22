@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm/Sửa mã giảm giá</title>
+</head>
+<body>
+<h1>Thêm/Sửa mã giảm giá</h1>
+<form th:action="@{/coupons/save}" th:object="${coupon}" method="post">
+    <label for="code">Mã giảm giá:</label>
+    <input type="text" id="code" th:field="*{code}" />
+
+    <label for="discount">Giảm giá:</label>
+    <input type="number" id="discount" th:field="*{discount}" />
+
+    <label for="expiryDate">Ngày hết hạn:</label>
+    <input type="date" id="expiryDate" th:field="*{expiryDate}" />
+
+    <button type="submit">Lưu</button>
+</form>
+</body>
+</html>
