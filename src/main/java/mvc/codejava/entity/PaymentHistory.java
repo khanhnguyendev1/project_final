@@ -1,6 +1,8 @@
 package mvc.codejava.entity;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "payment_history")
@@ -10,9 +12,12 @@ public class PaymentHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double amount;
-    private String unit;
-    private String method;
+    private String paymentMethod;
+    private double totalAmount;
+    private Date paymentDate;
+
+    @OneToMany(mappedBy = "paymentHistory")
+    private List<Purchase> purchases;
 
     public Long getId() {
         return id;
@@ -22,27 +27,35 @@ public class PaymentHistory {
         this.id = id;
     }
 
-    public double getAmount() {
-        return amount;
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
-    public String getUnit() {
-        return unit;
+    public double getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
-    public String getMethod() {
-        return method;
+    public Date getPaymentDate() {
+        return paymentDate;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
     }
 }

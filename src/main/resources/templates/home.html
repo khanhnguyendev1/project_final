@@ -14,37 +14,8 @@
         .header {
             background-color: #4CAF50;
             color: white;
-            padding: 1em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            margin: 0;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .auth-buttons a {
-            background-color: white;
-            color: #4CAF50;
-            border: 2px solid white;
-            padding: 10px 20px;
             text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .auth-buttons a:hover {
-            background-color: #45a049;
-            color: white;
-            border: 2px solid #45a049;
+            padding: 1em;
         }
 
         .banner {
@@ -62,22 +33,37 @@
             font-size: 3em;
         }
 
+        .add-product {
+            text-align: center; /* Center the add product button */
+            margin: 20px 0;
+        }
+
         .products {
             display: flex;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            justify-content: center; /* Center the products */
             margin: 20px;
         }
 
-        .product {
+        .product-card {
             border: 1px solid #ddd;
+            border-radius: 5px;
             padding: 15px;
             text-align: center;
-            width: 30%;
+            width: 280px; /* Fixed width for each product */
+            margin: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s; /* Add a hover effect */
         }
 
-        .product img {
+        .product-card img {
             width: 100%;
             height: auto;
+            border-radius: 5px; /* Rounded corners for images */
+        }
+
+        .product-card:hover {
+            transform: scale(1.05); /* Slightly enlarge product on hover */
         }
 
         .footer {
@@ -98,39 +84,66 @@
             font-size: 16px;
             margin: 10px 2px;
             cursor: pointer;
+            border-radius: 5px; /* Rounded corners for buttons */
+        }
+
+		.user-info {
+            display: flex;
+            justify-content: flex-end;
+            margin-right: 20px;
+            margin-top: 10px;
+        }
+
+        .user-info span {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .user-info a {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .user-info a:hover {
+            background-color: #45a049;
         }
 	</style>
 </head>
 <body>
 <div class="header">
 	<h1>Chào mừng đến với Hi-Tech Store</h1>
+	<p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
 </div>
 
-<!-- Banner -->
+<div class="user-info">
+	<span>Xin chào, <span th:text="${username}">Tên người dùng</span></span>
+	<a th:href="@{/login}">Đăng xuất</a>
+</div>
+
+
 <div class="banner">
 	<h1>Sản phẩm công nghệ cao cấp</h1>
 </div>
 
-<!-- Danh sách sản phẩm nổi bật -->
-<h2 style="text-align: center; margin: 20px;">Sản phẩm nổi bật</h2>
+<div class="add-product">
+	<a href="/products/add" class="button">Thêm sản phẩm mới</a>
+</div>
+
+
+<h2 style="text-align: center; margin: 20px;">Danh sách sản phẩm</h2>
 <div class="products">
-	<div class="product">
-		<img src="/images/laptop.jpg" alt="Laptop">
-		<h3>Laptop Cao Cấp</h3>
-		<p>Giá: 20,000,000 VND</p>
-		<button class="button">Thêm vào giỏ hàng</button>
-	</div>
-	<div class="product">
-		<img src="/images/phone.jpg" alt="Điện thoại">
-		<h3>Điện thoại thông minh</h3>
-		<p>Giá: 10,000,000 VND</p>
-		<button class="button">Thêm vào giỏ hàng</button>
-	</div>
-	<div class="product">
-		<img src="/images/mouse.jpg" alt="Chuột máy tính">
-		<h3>Chuột Máy Tính Gaming</h3>
-		<p>Giá: 500,000 VND</p>
-		<button class="button">Thêm vào giỏ hàng</button>
+	<div th:each="product : ${products}" class="product-card">
+		<h3 th:text="${product.name}">Tên sản phẩm</h3>
+		<p th:text="'Giá: ' + ${product.price} + ' VND'">Giá: 0 VND</p>
+		<p th:text="'Số lượng: ' + ${product.stock}">Số lượng: 0</p>
+		<p th:text="'Thương hiệu: ' + ${product.brand}">Thương hiệu</p>
+		<p th:text="'Danh mục: ' + ${product.category.name}">Danh mục</p>
+		<a th:href="@{/products/edit/{id}(id=${product.id})}" class="button">Sửa</a>
+		<a th:href="@{/products/delete/{id}(id=${product.id})}" class="button" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
+		<a th:href="@{/cart/add/{id}(id=${product.id})}" class="button">Thêm vào giỏ hàng</a>
 	</div>
 </div>
 

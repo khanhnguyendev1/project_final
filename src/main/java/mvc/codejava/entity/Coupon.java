@@ -2,6 +2,7 @@ package mvc.codejava.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "coupon")
@@ -11,9 +12,12 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int percent;
-    private Date startDate;
-    private Date endDate;
+    private String code;
+    private double discount;
+    private Date expiryDate;
+
+    @OneToMany(mappedBy = "coupon")
+    private List<Purchase> purchases;
 
     public Long getId() {
         return id;
@@ -23,27 +27,35 @@ public class Coupon {
         this.id = id;
     }
 
-    public int getPercent() {
-        return percent;
+    public String getCode() {
+        return code;
     }
 
-    public void setPercent(int percent) {
-        this.percent = percent;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public double getDiscount() {
+        return discount;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setDiscount(double discount) {
+        this.discount = discount;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Date getExpiryDate() {
+        return expiryDate;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
     }
 }

@@ -11,9 +11,9 @@ public class Product {
     private Long id;
 
     private String name;
-    private String price;
+    private double price;
     private String description;
-    private String images;
+
     private int stock;
     private String brand;
 
@@ -37,11 +37,11 @@ public class Product {
         this.name = name;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -51,14 +51,6 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
     }
 
     public int getStock() {

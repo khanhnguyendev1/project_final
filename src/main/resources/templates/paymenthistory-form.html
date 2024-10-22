@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm/Sửa lịch sử thanh toán</title>
+</head>
+<body>
+<h1>Thêm/Sửa lịch sử thanh toán</h1>
+<form th:action="@{/paymenthistories/save}" th:object="${paymentHistory}" method="post">
+    <label for="paymentMethod">Phương thức thanh toán:</label>
+    <input type="text" id="paymentMethod" th:field="*{paymentMethod}" />
+
+    <label for="totalAmount">Tổng tiền:</label>
+    <input type="number" id="totalAmount" th:field="*{totalAmount}" />
+
+    <label for="paymentDate">Ngày thanh toán:</label>
+    <input type="date" id="paymentDate" th:field="*{paymentDate}" />
+
+    <button type="submit">Lưu</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán</title>
+</head>
+<body>
+<h1>Thanh toán</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Sản phẩm</th>
+        <th>Số lượng</th>
+        <th>Giá</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${cartItems}">
+        <td th:text="${entry.key.name}">Tên sản phẩm</td>
+        <td th:text="${entry.value}">Số lượng</td>
+        <td th:text="${entry.key.price} + ' VND'">Giá</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Tổng cộng: <span th:text="${totalPrice} + ' VND'">0 VND</span></h2>
+
+
+<form th:action="@{/checkout/applyCoupon}" method="post">
+    <label for="couponCode">Nhập mã giảm giá:</label>
+    <input type="text" id="couponCode" name="couponCode" />
+    <button type="submit">Áp dụng</button>
+</form>
+
+
+<form th:action="@{/checkout/complete}" method="post">
+    <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
+    <label for="paymentMethod">Phương thức thanh toán:</label>
+    <select id="paymentMethod" name="paymentMethod">
+        <option value="CASH">Tiền mặt</option>
+        <option value="CARD">Thẻ tín dụng</option>
+    </select>
+
+    <input type="hidden" name="couponCode" th:value="${couponCode}" />
+    <button type="submit">Hoàn tất thanh toán</button>
+</form>
+
+<p th:if="${error}" th:text="${error}"></p>
+<p th:if="${success}" th:text="${success}"></p>
+</body>
+</html>
