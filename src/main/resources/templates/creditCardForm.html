@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/checkout/submitCreditCardPayment}" method="post">
+    <h3>Nhập thông tin thẻ tín dụng</h3>
+
+    <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
+    <input type="hidden" name="couponCode" th:value="${couponCode}" />
+
+    <label for="cardNumber">Số thẻ tín dụng:</label>
+    <input type="text" id="cardNumber" name="cardNumber" required />
+
+    <label for="cardName">Tên chủ thẻ:</label>
+    <input type="text" id="cardName" name="cardName" required />
+
+    <label for="expiryDate">Ngày hết hạn (MM/YY):</label>
+    <input type="text" id="expiryDate" name="expiryDate" required />
+
+    <label for="cvv">Mã bảo mật (CVV):</label>
+    <input type="text" id="cvv" name="cvv" required />
+
+    <button type="submit">Xác nhận thanh toán</button>
+</form>
+</body>
+</html>

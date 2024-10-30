@@ -35,7 +35,7 @@
 </head>
 <body>
 <h1>Cập Nhật Sản Phẩm</h1>
-<form th:action="@{/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post">
+<form th:action="@{/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="name">Tên Sản Phẩm:</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Nhập tên sản phẩm" required />
@@ -43,6 +43,11 @@
     <div class="form-group">
         <label for="price">Giá Sản Phẩm:</label>
         <input type="number" id="price" th:field="*{price}" placeholder="Nhập giá sản phẩm" required />
+    </div>
+    <div class="form-group">
+        <label for="imageFile">Ảnh: </label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*" />
+        <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" alt="Product Image" style="max-width: 200px; max-height: 200px;" />
     </div>
     <div class="form-group">
         <label for="description">Mô Tả Sản Phẩm:</label>

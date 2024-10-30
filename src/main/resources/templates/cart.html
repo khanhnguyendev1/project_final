@@ -44,12 +44,12 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="entry : ${products}">
+    <tr th:each="entry : ${cartItems}">
         <td th:text="${entry.key.name}">Tên sản phẩm</td>
         <td>
             <span th:text="${entry.value}">Số lượng</span>
         </td>
-        <td th:text="${entry.key.price} + ' VND'">Giá</td>
+        <td th:text="${entry.key.price} + ' $'">Giá</td>
         <td class="actions">
             <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
             <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
@@ -59,9 +59,9 @@
     </tbody>
 </table>
 
-<h2>Tổng cộng: <span th:text="${total} + ' VND'">0 VND</span></h2>
+<h2>Tổng cộng: <span th:text="${total} + ' $'">0 $</span></h2>
 
-<a href="/checkout" class="button">Thanh toán</a>
+<a href="/checkout">Thanh toán</a>
 <a href="/home" class="button">Quay lại trang chủ</a>
 </body>
 </html>

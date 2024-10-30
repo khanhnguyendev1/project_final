@@ -46,7 +46,7 @@
 <body>
 <div class="container">
     <h1 th:text="${#strings.isEmpty(product.id) ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h1>
-    <form th:action="@{$[(#strings.isEmpty(product.id) ? '/products/add' : '/products/edit/' + product.id)]}" method="post">
+    <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name">Tên sản phẩm:</label>
             <input type="text" id="name" name="name" required/>
@@ -55,6 +55,11 @@
         <div class="form-group">
             <label for="price">Giá:</label>
             <input type="number" id="price" name="price" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="imageFile">Hình ảnh: </label>
+            <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
         </div>
 
         <div class="form-group">

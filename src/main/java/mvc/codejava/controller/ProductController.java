@@ -3,6 +3,7 @@ package mvc.codejava.controller;
 import mvc.codejava.entity.Category;
 import mvc.codejava.entity.Product;
 import mvc.codejava.service.CategoryService;
+import mvc.codejava.service.CloudinaryService;
 import mvc.codejava.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,9 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @GetMapping("/home")
     public String showProductList(Model model) {
         List<Product> products = productService.getAllProducts();
@@ -32,46 +36,61 @@ public class ProductController {
         return "home";
     }
 
-    @GetMapping("/products/add")
-    public String showAddProductForm(Model model) {
-        model.addAttribute("product", new Product());
-
-        // Lấy danh sách các danh mục sản phẩm từ cơ sở dữ liệu
-        List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-        return "product-form";
+    @GetMapping("/products/{id}")
+    public String getProductDetails(@PathVariable Long id, Model model) {
+        Product product = productService.findById(id);
+        model.addAttribute("product", product);
+        return "product-details";
     }
 
-    @PostMapping("/products/save")
-    public String addProduct(@ModelAttribute("product") Product product, @RequestParam("category") Long categoryId, RedirectAttributes redirectAttributes) {
-        // Gán danh mục vào sản phẩm
-        Category category = categoryService.findById(categoryId);
-        product.setCategory(category);
-        productService.saveProduct(product);
-        redirectAttributes.addFlashAttribute("message", "Sản phẩm đã được thêm thành công!");
-        return "redirect:/home";
+    @RequestMapping(value = "/products/add", method = {RequestMethod.GET, RequestMethod.POST})
+    public String handleAddProductForm(@ModelAttribute("product") Product product,
+                                       @RequestParam(value = "category", required = false) Long categoryId,
+                                       @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                       Model model, RedirectAttributes redirectAttributes) throws IOException {
+        if (categoryId == null && imageFile == null) {
+            model.addAttribute("product", new Product());
+            List<Category> categories = categoryService.getAllCategories();
+            model.addAttribute("categories", categories);
+            return "product-form";
+        } else {
+            Category category = categoryService.findById(categoryId);
+            product.setCategory(category);
+            if (!imageFile.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadImage(imageFile);
+                product.setImageUrl(imageUrl);
+            }
+            productService.saveProduct(product);
+            redirectAttributes.addFlashAttribute("message", "Sản phẩm đã được thêm thành công!");
+            return "redirect:/home";
+        }
     }
 
     @GetMapping("/products/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Product product = productService.findById(id); // Lấy sản phẩm từ database
         if (product == null) {
-            return "redirect:/products"; // Chuyển hướng nếu không tìm thấy sản phẩm
+            return "redirect:/home";
         }
-        List<Category> categories = categoryService.getAllCategories(); // Lấy tất cả danh mục
-        model.addAttribute("product", product); // Thêm sản phẩm vào model
-        model.addAttribute("categories", categories); // Thêm danh sách danh mục vào model
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categories);
         return "update-product"; // Trả về tên template
     }
 
     @PostMapping("/products/edit/{id}")
-    public String updateProduct(@PathVariable("id") Long id, @ModelAttribute Product product) {
-        productService.updateProduct(id, product); // Cập nhật sản phẩm
-        return "redirect:/home"; // Chuyển hướng đến danh sách sản phẩm
+    public String updateProduct(@PathVariable("id") Long id, @ModelAttribute Product product, @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes redirectAttributes) throws IOException {
+        if (!imageFile.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadImage(imageFile);
+            product.setImageUrl(imageUrl);
+        } else {
+            Product existingProduct = productService.findById(product.getId());
+            product.setImageUrl(existingProduct.getImageUrl());
+        }
+        productService.updateProduct(id, product);
+        return "redirect:/home";
     }
 
-
-    // Xóa sản phẩm
     @GetMapping("/products/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);

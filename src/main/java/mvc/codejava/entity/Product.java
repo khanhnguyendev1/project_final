@@ -1,6 +1,7 @@
 package mvc.codejava.entity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "product")
@@ -13,13 +14,28 @@ public class Product {
     private String name;
     private double price;
     private String description;
-
+    private String imageUrl;
     private int stock;
     private String brand;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id); // So sánh dựa trên id
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // Tạo mã hash dựa trên id
+    }
+
 
     public Long getId() {
         return id;
@@ -43,6 +59,14 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDescription() {
@@ -76,4 +100,5 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
+
 }

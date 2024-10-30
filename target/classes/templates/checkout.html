@@ -34,10 +34,10 @@
 </form>
 
 
-<form th:action="@{/checkout/complete}" method="post">
+<form th:action="@{/checkout/complete}" method="get" id="checkoutForm">
     <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
     <label for="paymentMethod">Phương thức thanh toán:</label>
-    <select id="paymentMethod" name="paymentMethod">
+    <select id="paymentMethod" name="paymentMethod" onchange="checkPaymentMethod()">
         <option value="CASH">Tiền mặt</option>
         <option value="CARD">Thẻ tín dụng</option>
     </select>
@@ -45,6 +45,19 @@
     <input type="hidden" name="couponCode" th:value="${couponCode}" />
     <button type="submit">Hoàn tất thanh toán</button>
 </form>
+
+<script type="text/javascript">
+    function checkPaymentMethod() {
+        var paymentMethod = document.getElementById("paymentMethod").value;
+        var form = document.getElementById("checkoutForm");
+
+        if (paymentMethod === "CARD") {
+            form.action = "/checkout/creditCard";
+        } else {
+            form.action = "/checkout/complete";
+        }
+    }
+</script>
 
 <p th:if="${error}" th:text="${error}"></p>
 <p th:if="${success}" th:text="${success}"></p>

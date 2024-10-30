@@ -2,20 +2,108 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Đăng nhập</title>
+    <style>
+        /* Định dạng chung cho toàn trang */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Định dạng cho form đăng nhập */
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        /* Định dạng cho các nhãn và ô input */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Định dạng cho nút đăng nhập */
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Định dạng cho nút đăng ký */
+        button {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #1976D2;
+        }
+
+        /* Định dạng cho thông báo lỗi */
+        p {
+            color: red;
+            font-size: 14px;
+        }
+
+        /* Canh giữa form */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-<h2>Đăng nhập</h2>
-<form th:action="@{/login}" method="post">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="username" required/><br/>
+<div class="container">
+    <form th:action="@{/login}" method="post">
+        <h2>Đăng nhập</h2>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="username" required/>
 
-    <label for="password">Mật khẩu:</label>
-    <input type="password" id="password" name="password" required/><br/>
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" name="password" required/>
 
-    <button type="submit">Đăng nhập</button>
-</form>
+        <button type="submit">Đăng nhập</button>
+        <button onclick="window.location.href='/register'">Chưa có tài khoản? Đăng ký</button>
+    </form>
+</div>
 
-<button onclick="window.location.href='/register'">Chưa có tài khoản? Đăng ký</button>
+
 
 <p th:text="${error}"></p>
 </body>

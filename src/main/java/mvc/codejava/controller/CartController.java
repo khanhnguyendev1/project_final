@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/cart")
@@ -16,13 +18,15 @@ public class CartController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CartService cartService;
+
     @GetMapping
     public String showCart(HttpSession session, Model model) {
         CartService cart = (CartService) session.getAttribute("cart");
         if (cart == null) {
             cart = new CartService();
         }
-        model.addAttribute("products", cart.getProducts());
         model.addAttribute("total", cart.calculateTotal());
         model.addAttribute("cartItems", cart.getCartItems());
         return "cart";
@@ -35,7 +39,7 @@ public class CartController {
         if (cart == null) {
             cart = new CartService();
         }
-        cart.addProduct(product);  // Tăng số lượng sản phẩm nếu đã có trong giỏ
+        cart.addProduct(product);
         session.setAttribute("cart", cart);
         return "redirect:/cart";
     }
@@ -64,24 +68,38 @@ public class CartController {
     }
 
     @GetMapping("/increase/{id}")
-    public String increaseProductQuantity(@PathVariable("id") Long productId, HttpSession session) {
+    public String increaseQuantity(@PathVariable Long id, HttpSession session) {
+        // Lấy giỏ hàng từ session
         CartService cart = (CartService) session.getAttribute("cart");
-        if (cart != null) {
-            Product product = productService.findById(productId);
-            cart.addProduct(product); // Tăng số lượng sản phẩm
+
+        // Nếu cart chưa tồn tại, khởi tạo một cart mới
+        if (cart == null) {
+            cart = new CartService(); // Giả sử bạn đã định nghĩa một lớp CartService
             session.setAttribute("cart", cart);
         }
-        return "redirect:/cart";
+
+        // Tìm sản phẩm theo ID
+        Product product = productService.findById(id);
+        if (product != null) {
+            cart.addProduct(product); // Sử dụng CartService để thêm sản phẩm
+        }
+
+        return "redirect:/cart"; // Chuyển hướng lại trang giỏ hàng
     }
 
     @GetMapping("/decrease/{id}")
-    public String decreaseProductQuantity(@PathVariable("id") Long productId, HttpSession session) {
+    public String decreaseQuantity(@PathVariable Long id, HttpSession session) {
+        // Lấy giỏ hàng từ session
         CartService cart = (CartService) session.getAttribute("cart");
+
         if (cart != null) {
-            Product product = productService.findById(productId);
-            cart.decreaseProductQuantity(product); // Giảm số lượng sản phẩm
-            session.setAttribute("cart", cart);
+            // Tìm sản phẩm theo ID
+            Product product = productService.findById(id);
+            if (product != null) {
+                cart.decreaseProductQuantity(product); // Sử dụng CartService để giảm số lượng hoặc xóa sản phẩm
+            }
         }
-        return "redirect:/cart";
+
+        return "redirect:/cart"; // Chuyển hướng lại trang giỏ hàng
     }
 }
