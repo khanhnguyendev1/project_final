@@ -34,35 +34,37 @@
 <body>
 <h1>Giỏ hàng của bạn</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>Sản phẩm</th>
-        <th>Số lượng</th>
-        <th>Giá</th>
-        <th>Thao tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="entry : ${cartItems}">
-        <td th:text="${entry.key.name}">Tên sản phẩm</td>
-        <td>
-            <span th:text="${entry.value}">Số lượng</span>
-        </td>
-        <td th:text="${entry.key.price} + ' $'">Giá</td>
-        <td class="actions">
-            <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
-            <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
-            <a th:href="@{/cart/remove/{id}(id=${entry.key.id})}" class="button">Xóa</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<form action="/checkout" method="get">
+    <table>
+        <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry : ${cartItems}">
+            <td th:text="${entry.key.name}">Tên sản phẩm</td>
+            <td>
+                <span th:text="${entry.value}">Số lượng</span>
+            </td>
+            <td th:text="${entry.key.price} + ' $'">Giá</td>
+            <td class="actions">
+                <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
+                <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
+                <a th:href="@{/cart/remove/{id}(id=${entry.key.id})}" class="button">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<h2>Tổng cộng: <span th:text="${total} + ' $'">0 $</span></h2>
+    <h2>Tổng cộng: <span th:text="${total} + ' $'">0 $</span></h2>
+    <button type="submit" class="button">Thanh toán</button>
+    <a href="/home" class="button">Quay lại trang chủ</a>
+</form>
 
-<a href="/checkout">Thanh toán</a>
-<a href="/home" class="button">Quay lại trang chủ</a>
 </body>
 </html>
 

@@ -27,6 +27,9 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase")
     private List<PurchaseItem> purchaseItems;
 
+    @ManyToOne
+    private User user;
+
     public Long getId() {
         return id;
     }
@@ -81,5 +84,13 @@ public class Purchase {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

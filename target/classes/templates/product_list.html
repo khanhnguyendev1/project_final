@@ -3,78 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Danh sách sản phẩm</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .product-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: space-around;
-        }
-
-        .product-card {
-            border: 1px solid #ddd;
-            padding: 20px;
-            text-align: center;
-            width: 30%;
-            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .product-card img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .product-card h3 {
-            margin-top: 10px;
-            font-size: 1.5em;
-        }
-
-        .product-card p {
-            font-size: 1em;
-            margin: 10px 0;
-        }
-
-        .product-card:hover {
-            transform: scale(1.05);
-        }
-
-        .button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #45a049;
-        }
-    </style>
 </head>
 <body>
-<h2 style="text-align: center;">Danh sách sản phẩm</h2>
+<h1>Danh sách sản phẩm</h1>
 
-<!-- Grid hiển thị sản phẩm -->
-<div class="product-grid">
-    <div class="product-card" th:each="product : ${products}">
-        <img th:src="@{/images/laptop.jpg}" alt="Sản phẩm">
-        <h3 th:text="${product.name}">Tên sản phẩm</h3>
-        <p th:text="${product.price}">Giá: 0 VND</p>
-        <p th:text="${product.description}">Mô tả sản phẩm</p>
-        <p th:text="${product.stock}">Số lượng: 0</p>
-        <p th:text="${product.brand}">Thương hiệu</p>
-        <p th:text="${product.category.name}">Danh mục</p>
-        <button class="button">Thêm vào giỏ hàng</button>
-    </div>
-</div>
+<form method="get" action="/products">
+    <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm sản phẩm..." />
+    <button type="submit">Tìm kiếm</button>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>Tên sản phẩm</th>
+        <th>Giá</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.name}">Tên sản phẩm</td>
+        <td th:text="${product.price} + ' $'">Giá</td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/home">Quay lại trang chủ</a>
 </body>
 </html>

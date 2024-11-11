@@ -50,4 +50,12 @@ public class ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    public List<Product> getProductsByCategory(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId);
+    }
+
+    public List<Product> searchProducts(String searchTerm) {
+        return productRepository.searchByName(searchTerm);
+    }
 }

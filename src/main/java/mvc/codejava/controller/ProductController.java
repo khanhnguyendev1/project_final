@@ -30,12 +30,26 @@ public class ProductController {
     private CloudinaryService cloudinaryService;
 
     @GetMapping("/home")
-    public String showProductList(Model model) {
-        List<Product> products = productService.getAllProducts();
+    public String showProductList(
+            @RequestParam(value = "category", required = false) Long categoryId,
+            @RequestParam(value = "search", required = false) String search,
+            Model model) {
+
+        List<Product> products;
+        if (categoryId != null) {
+            products = productService.getProductsByCategory(categoryId);
+        } else if (search != null && !search.isEmpty()) {
+            products = productService.searchProducts(search);
+        } else {
+            products = productService.getAllProducts();
+        }
+
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("products", products);
+        model.addAttribute("search", search);
         return "home";
     }
-
+    
     @GetMapping("/products/{id}")
     public String getProductDetails(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);

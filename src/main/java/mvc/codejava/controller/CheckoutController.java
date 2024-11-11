@@ -1,6 +1,12 @@
 package mvc.codejava.controller;
 
-import mvc.codejava.entity.*;
+import com.stripe.exception.StripeException;
+import com.stripe.model.billingportal.Session;
+import com.stripe.param.checkout.SessionCreateParams;
+import mvc.codejava.entity.Coupon;
+import mvc.codejava.entity.PaymentHistory;
+import mvc.codejava.entity.Purchase;
+import mvc.codejava.entity.PurchaseItem;
 import mvc.codejava.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/checkout")
 public class CheckoutController {
+
+
+    @Autowired
+    private StripeService stripeService;
 
     @Autowired
     private CouponService couponService;
@@ -29,114 +37,101 @@ public class CheckoutController {
     @Autowired
     private PurchaseService purchaseService;
 
-    @Autowired
-    private CartService cartService;
+    @GetMapping("/checkout")
+    public String showCheckoutPage(Model model, HttpSession session) throws Exception {
+        CartService cart = (CartService) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new CartService();
+        }
+        double totalPrice = cart.calculateTotal();
+        String clientSecret = stripeService.createPaymentIntent(totalPrice);
 
-    @Autowired
-    private OrderService orderService;
+        if (totalPrice < 0.5) {
+            throw new IllegalArgumentException("Total amount must be at least 0.5 USD for payment.");
+        }
+        model.addAttribute("cartItems", cart.getCartItems());
+        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("stripePublicKey", "pk_test_51QFYEvJlZ89ABcRnBXRe2DmLy7nnWOWSK7V81qAYBodnIHrqNL8kh3EOf4H0AARdbfc10sFvss3HlMAzcJxMUtCw00AGErA6Ql");
+        model.addAttribute("clientSecret", clientSecret);
 
-    @GetMapping
-    public String showCheckoutPage(Model model) {
-        // Hiển thị giỏ hàng và tổng tiền hiện tại
-        model.addAttribute("cartItems", cartService.getCartItems());
-        model.addAttribute("totalPrice", cartService.getTotalPrice());
         return "checkout";
     }
-    
 
-    @PostMapping("/applyCoupon")
-    public String applyCoupon(@RequestParam("couponCode") String couponCode, Model model) {
-        Coupon coupon = couponService.findByCode(couponCode);
+    @PostMapping("/checkout/complete")
+    public String completeCheckout(@RequestParam("paymentMethod") String paymentMethod,
+                                   @RequestParam(value = "couponCode", required = false) String couponCode,HttpSession session,
+                                   Model model, RedirectAttributes redirectAttributes) {
 
-        if (coupon == null || coupon.getExpiryDate().before(new Date())) {
-            model.addAttribute("error", "Mã giảm giá không hợp lệ hoặc đã hết hạn.");
-        } else {
-            cartService.applyDiscount(coupon);
-            model.addAttribute("success", "Mã giảm giá đã được áp dụng.");
+        CartService cart = (CartService) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new CartService();
+        }
+        double discount = 0.0;
+        if (couponCode != null && !couponCode.isEmpty()) {
+            Coupon coupon = couponService.findByCode(couponCode);
+            if (coupon != null) {
+                discount = coupon.getDiscount();
+                cart.applyDiscount(coupon);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Coupon code is invalid.");
+                return "redirect:/checkout";
+            }
         }
 
-        model.addAttribute("cartItems", cartService.getCartItems());
-        model.addAttribute("totalPrice", cartService.getTotalPrice());
-        return "checkout";
-    }
 
-    @GetMapping("/complete")
-    public String completeCheckout(@RequestParam("paymentMethod") String paymentMethod,
-                                   @RequestParam("totalPrice") double totalPrice,
-                                   @RequestParam(value = "couponCode", required = false) String couponCode,
-                                   Model model) {
+        double totalPrice = cart.getTotalPrice();
+        if (totalPrice < 0.5) {
+            redirectAttributes.addFlashAttribute("error", "Total amount must be at least 0.5 USD for payment.");
+            return "redirect:/checkout";
+        }
+
+
+        String clientSecret;
+        try {
+            clientSecret = stripeService.createPaymentIntent(totalPrice);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to initiate payment. Please try again.");
+            return "redirect:/checkout";
+        }
+
+
+        model.addAttribute("clientSecret", clientSecret);
+        model.addAttribute("stripePublicKey", "pk_test_51QFYEvJlZ89ABcRnBXRe2DmLy7nnWOWSK7V81qAYBodnIHrqNL8kh3EOf4H0AARdbfc10sFvss3HlMAzcJxMUtCw00AGErA6Ql");
+        model.addAttribute("cartItems", cart.getCartItems());
+        model.addAttribute("totalPrice", totalPrice);
+
 
         PaymentHistory paymentHistory = new PaymentHistory();
         paymentHistory.setPaymentMethod(paymentMethod);
         paymentHistory.setTotalAmount(totalPrice);
-        paymentHistory.setPaymentDate(new Date());
+        paymentHistory.setPaymentDate(new java.util.Date());
         paymentHistoryService.savePaymentHistory(paymentHistory);
 
 
-        Coupon coupon = null;
-        if (couponCode != null && !couponCode.isEmpty()) {
-            coupon = couponService.findByCode(couponCode);
-        }
-
         Purchase purchase = new Purchase();
-        purchase.setDate(new Date());
-        purchase.setStatus("COMPLETED");
+        purchase.setDate(new java.util.Date());
         purchase.setTotalPrice(totalPrice);
+        purchase.setStatus("Completed");
         purchase.setPaymentHistory(paymentHistory);
-        purchase.setCoupon(coupon);
+        purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
 
-
-        List<PurchaseItem> purchaseItems = new ArrayList<>();
-        List<CartItem> cartItems = (List<CartItem>) cartService.getCartItems();
-
-        if (cartItems != null) {
-            for (CartItem item : cartItems) {
-                if (item.getProduct() != null && item.getQuantity() > 0) {
-                    PurchaseItem purchaseItem = new PurchaseItem();
-                    purchaseItem.setProduct(item.getProduct());
-                    purchaseItem.setQuantity(item.getQuantity());
-                    purchaseItem.setPurchase(purchase);
-                    purchaseItems.add(purchaseItem);
-                }
-            }
-        }
+        // Lưu các sản phẩm từ giỏ hàng vào PurchaseItem và gán vào Purchase
+        List<PurchaseItem> purchaseItems = cart.getCartItems().entrySet().stream().map(entry -> {
+            PurchaseItem purchaseItem = new PurchaseItem();
+            purchaseItem.setProduct(entry.getKey());
+            purchaseItem.setQuantity(entry.getValue());
+            purchaseItem.setPurchase(purchase);
+            return purchaseItem;
+        }).collect(Collectors.toList());
 
         purchase.setPurchaseItems(purchaseItems);
         purchaseService.savePurchase(purchase);
 
-        model.addAttribute("message", "Thanh toán thành công!");
-        return "checkout-success";
+
+        cart.clearCart();
+
+        redirectAttributes.addFlashAttribute("message", "Checkout successful! Thank you for your purchase.");
+        return "redirect:/home";
     }
 
-    @GetMapping("/creditCard")
-    public String creditCardForm(Model model, @RequestParam("totalPrice") String totalPrice, @RequestParam("couponCode") String couponCode) {
-        // Truyền giá trị totalPrice và couponCode nếu cần
-        model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("couponCode", couponCode);
-        return "creditCardForm"; // Trả về trang nhập thẻ tín dụng
-    }
-
-//    @PostMapping("/checkout/submitCreditCardPayment")
-//    public String submitCreditCardPayment(@RequestParam("cardNumber") String cardNumber,
-//                                          @RequestParam("cardName") String cardName,
-//                                          @RequestParam("expiryDate") String expiryDate,
-//                                          @RequestParam("cvv") String cvv,
-//                                          @RequestParam("totalPrice") String totalPrice,
-//                                          @RequestParam("couponCode") String couponCode,
-//                                          HttpSession session, Model model) {
-//        // Logic xử lý thanh toán thẻ tín dụng tại đây
-//        // Ví dụ: xác thực thông tin thẻ tín dụng, tích hợp cổng thanh toán...
-//
-//        CartService cart = (CartService) session.getAttribute("cart");
-//        if (cart == null || cart.getCartItems().isEmpty()) {
-//            model.addAttribute("error", "Giỏ hàng trống.");
-//            return "cart";
-//        }
-//
-//        // Sau khi thanh toán thành công
-//        orderService.createOrder(cart.getCartItems(), "CreditCard", totalPrice, couponCode);
-//        session.removeAttribute("cart");
-//
-//        return "checkout-success"; // Trang hiển thị thanh toán thành công
-//    }
 }

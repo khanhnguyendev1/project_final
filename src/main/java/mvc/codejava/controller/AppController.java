@@ -1,10 +1,14 @@
 package mvc.codejava.controller;
 
+import mvc.codejava.entity.Product;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 public class AppController {
@@ -14,7 +18,7 @@ public class AppController {
 	}
 
 	@RequestMapping("/home")
-	public String viewHomePage(Model model)
+	public String viewHomePage(@RequestParam(value = "categoryId", required = false) Long categoryId, Model model)
 	{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();

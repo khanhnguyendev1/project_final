@@ -1,8 +1,11 @@
 package mvc.codejava.controller;
 
 import mvc.codejava.entity.User;
+import mvc.codejava.repository.RoleRepository;
+import mvc.codejava.repository.UserRepository;
 import mvc.codejava.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,15 @@ public class AuthController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
