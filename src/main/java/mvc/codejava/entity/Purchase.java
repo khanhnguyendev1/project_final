@@ -12,6 +12,8 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private String orderId;
     private Date date;
     private String status;
     private double totalPrice;
@@ -92,5 +94,13 @@ public class Purchase {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

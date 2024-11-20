@@ -2,8 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Checkout</title>
-    <script src="https://js.stripe.com/v3/">
-    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,10 +46,6 @@
             justify-content: space-between;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
         label {
             font-size: 16px;
             color: #666;
@@ -69,13 +63,6 @@
             box-sizing: border-box;
         }
 
-        #card-element {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-
         button#submit {
             width: 100%;
             padding: 12px 0;
@@ -90,13 +77,6 @@
 
         button#submit:hover {
             background-color: #218838;
-        }
-
-        #error-message {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 10px;
-            text-align: center;
         }
     </style>
 </head>
@@ -124,72 +104,47 @@
         <label for="paymentMethod">Payment Method:</label>
         <select id="paymentMethod" name="paymentMethod" required>
             <option value="cash">Cash</option>
-            <option value="card">Credit Card</option>
+            <option value="vnpay">VNPAY</option>
         </select>
 
         <!-- Mã giảm giá -->
         <label for="couponCode">Coupon Code (optional):</label>
         <input type="text" id="couponCode" name="couponCode" placeholder="Enter your coupon code">
-        <div id="card-element" style="display: none;"><!-- Stripe Element sẽ mount vào đây --></div>
 
         <button id="submit">Pay $<span th:text="${totalPrice}"></span></button>
     </form>
 
     <script type="text/javascript">
-        const stripe = Stripe([[${stripePublicKey}]]);
-        const clientSecret = [[${clientSecret}]];
-
-        const style = {
-            base: {
-                color: "#32325d",
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontSmoothing: "antialiased",
-                fontSize: "16px",
-                "::placeholder": {
-                    color: "#aab7c4"
-                }
-            },
-            invalid: {
-                color: "#fa755a",
-                iconColor: "#fa755a"
-            }
-        };
-
-
-        const elements = stripe.elements();
-        const cardElement = elements.create("card", { style: style });
-
-        // Mount card element khi người dùng chọn thanh toán bằng thẻ
-        document.querySelector("#paymentMethod").addEventListener("change", function(event) {
-            console.log("Payment method changed to:", event.target.value);
-            if (event.target.value === "card") {
-                document.getElementById("card-element").style.display = "block";
-                cardElement.mount("#card-element");
-            } else {
-                document.getElementById("card-element").style.display = "none";
-                cardElement.unmount();
-            }
-        });
-
-
-        document.querySelector("#payment-form").addEventListener("submit", async (event) => {
+        document.querySelector("#payment-form").addEventListener("submit", (event) => {
             event.preventDefault();
 
             const paymentMethod = document.getElementById("paymentMethod").value;
 
-            if (paymentMethod === "card") {
-                const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-                    payment_method: {
-                        card: cardElement
+            if (paymentMethod === "vnpay") {
+                // Gửi yêu cầu đến server để tạo URL VNPAY
+                fetch('/vnpay/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        totalPrice: [[${totalPrice}]]
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        // Chuyển hướng người dùng đến trang thanh toán VNPAY
+                        window.location.href = data.url;
+                    } else {
+                        alert("Failed to create VNPAY payment URL.");
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-
-                if (error) {
-                    document.querySelector("#error-message").textContent = error.message;
-                } else if (paymentIntent.status === "succeeded") {
-                    window.location.href = "/order/confirmation";  // Điều hướng tới trang xác nhận thanh toán
-                }
             } else {
+                // Thanh toán bằng tiền mặt, submit form trực tiếp
                 event.target.submit();
             }
         });

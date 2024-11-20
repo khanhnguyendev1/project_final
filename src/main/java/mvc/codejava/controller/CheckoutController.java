@@ -1,32 +1,27 @@
 package mvc.codejava.controller;
 
-import com.stripe.exception.StripeException;
-import com.stripe.model.billingportal.Session;
-import com.stripe.param.checkout.SessionCreateParams;
 import mvc.codejava.entity.Coupon;
 import mvc.codejava.entity.PaymentHistory;
 import mvc.codejava.entity.Purchase;
 import mvc.codejava.entity.PurchaseItem;
 import mvc.codejava.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 public class CheckoutController {
 
-
     @Autowired
-    private StripeService stripeService;
+    private VnPayService vnPayService;
 
     @Autowired
     private CouponService couponService;
@@ -38,34 +33,34 @@ public class CheckoutController {
     private PurchaseService purchaseService;
 
     @GetMapping("/checkout")
-    public String showCheckoutPage(Model model, HttpSession session) throws Exception {
+    public String showCheckoutPage(Model model, HttpSession session) {
         CartService cart = (CartService) session.getAttribute("cart");
         if (cart == null) {
             cart = new CartService();
         }
         double totalPrice = cart.calculateTotal();
-        String clientSecret = stripeService.createPaymentIntent(totalPrice);
 
         if (totalPrice < 0.5) {
             throw new IllegalArgumentException("Total amount must be at least 0.5 USD for payment.");
         }
         model.addAttribute("cartItems", cart.getCartItems());
         model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("stripePublicKey", "pk_test_51QFYEvJlZ89ABcRnBXRe2DmLy7nnWOWSK7V81qAYBodnIHrqNL8kh3EOf4H0AARdbfc10sFvss3HlMAzcJxMUtCw00AGErA6Ql");
-        model.addAttribute("clientSecret", clientSecret);
 
         return "checkout";
     }
 
     @PostMapping("/checkout/complete")
     public String completeCheckout(@RequestParam("paymentMethod") String paymentMethod,
-                                   @RequestParam(value = "couponCode", required = false) String couponCode,HttpSession session,
-                                   Model model, RedirectAttributes redirectAttributes) {
+                                   @RequestParam(value = "couponCode", required = false) String couponCode,
+                                   HttpSession session,
+                                   Model model,
+                                   RedirectAttributes redirectAttributes) {
 
         CartService cart = (CartService) session.getAttribute("cart");
         if (cart == null) {
             cart = new CartService();
         }
+
         double discount = 0.0;
         if (couponCode != null && !couponCode.isEmpty()) {
             Coupon coupon = couponService.findByCode(couponCode);
@@ -78,28 +73,23 @@ public class CheckoutController {
             }
         }
 
-
         double totalPrice = cart.getTotalPrice();
         if (totalPrice < 0.5) {
             redirectAttributes.addFlashAttribute("error", "Total amount must be at least 0.5 USD for payment.");
             return "redirect:/checkout";
         }
 
-
-        String clientSecret;
+        String paymentUrl;
         try {
-            clientSecret = stripeService.createPaymentIntent(totalPrice);
+            String orderId = UUID.randomUUID().toString(); // Tạo mã đơn hàng duy nhất
+            String successUrl = "http://localhost:8080/checkout/success";
+            String cancelUrl = "http://localhost:8080/checkout/cancel";
+
+            paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, successUrl);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to initiate payment. Please try again.");
             return "redirect:/checkout";
         }
-
-
-        model.addAttribute("clientSecret", clientSecret);
-        model.addAttribute("stripePublicKey", "pk_test_51QFYEvJlZ89ABcRnBXRe2DmLy7nnWOWSK7V81qAYBodnIHrqNL8kh3EOf4H0AARdbfc10sFvss3HlMAzcJxMUtCw00AGErA6Ql");
-        model.addAttribute("cartItems", cart.getCartItems());
-        model.addAttribute("totalPrice", totalPrice);
-
 
         PaymentHistory paymentHistory = new PaymentHistory();
         paymentHistory.setPaymentMethod(paymentMethod);
@@ -107,15 +97,14 @@ public class CheckoutController {
         paymentHistory.setPaymentDate(new java.util.Date());
         paymentHistoryService.savePaymentHistory(paymentHistory);
 
-
         Purchase purchase = new Purchase();
+        purchase.setOrderId(UUID.randomUUID().toString());
         purchase.setDate(new java.util.Date());
         purchase.setTotalPrice(totalPrice);
-        purchase.setStatus("Completed");
+        purchase.setStatus("Pending");
         purchase.setPaymentHistory(paymentHistory);
         purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
 
-        // Lưu các sản phẩm từ giỏ hàng vào PurchaseItem và gán vào Purchase
         List<PurchaseItem> purchaseItems = cart.getCartItems().entrySet().stream().map(entry -> {
             PurchaseItem purchaseItem = new PurchaseItem();
             purchaseItem.setProduct(entry.getKey());
@@ -127,11 +116,50 @@ public class CheckoutController {
         purchase.setPurchaseItems(purchaseItems);
         purchaseService.savePurchase(purchase);
 
-
         cart.clearCart();
+        return "redirect:" + paymentUrl;
+    }
 
-        redirectAttributes.addFlashAttribute("message", "Checkout successful! Thank you for your purchase.");
+    @GetMapping("/checkout/success")
+    public String paymentSuccess(@RequestParam Map<String, String> responseParams,
+                                 Model model, RedirectAttributes redirectAttributes) {
+        boolean isValid = vnPayService.validatePaymentResponse(responseParams);
+        if (isValid) {
+            String orderId = responseParams.get("vnp_TxnRef");
+            Purchase purchase = purchaseService.findByOrderId(orderId);
+            if (purchase != null) {
+                purchase.setStatus("Completed");
+                purchaseService.updatePurchase(purchase);
+            }
+            redirectAttributes.addFlashAttribute("message", "Payment successful! Thank you for your purchase.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Payment validation failed. Please contact support.");
+        }
         return "redirect:/home";
     }
 
+    @GetMapping("/checkout/cancel")
+    public String paymentCancel(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("error", "You have cancelled the payment.");
+        return "redirect:/checkout";
+    }
+
+    @PostMapping("/vnpay/checkout")
+    @ResponseBody
+    public ResponseEntity<?> createVnpayPayment(@RequestBody Map<String, Object> requestData) {
+        try {
+            double totalPrice = Double.parseDouble(requestData.get("totalPrice").toString());
+            String orderId = UUID.randomUUID().toString(); // Tạo mã đơn hàng duy nhất
+            String returnUrl = "http://localhost:8080/checkout/success"; // URL trả về sau khi thanh toán
+
+            String paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, returnUrl);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("url", paymentUrl);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating VNPAY payment URL.");
+        }
+    }
 }
