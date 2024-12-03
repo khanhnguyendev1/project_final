@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 public class CheckoutController {
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private VnPayService vnPayService;
 
     @Autowired
@@ -79,45 +82,61 @@ public class CheckoutController {
             return "redirect:/checkout";
         }
 
-        String paymentUrl;
-        try {
-            String orderId = UUID.randomUUID().toString(); // Tạo mã đơn hàng duy nhất
-            String successUrl = "http://localhost:8080/checkout/success";
-            String cancelUrl = "http://localhost:8080/checkout/cancel";
+        if ("vnpay".equalsIgnoreCase(paymentMethod)) {
+            try {
+                String orderId = UUID.randomUUID().toString();
+                String successUrl = "http://localhost:8080/checkout/success";
+                String cancelUrl = "http://localhost:8080/checkout/cancel";
 
-            paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, successUrl);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to initiate payment. Please try again.");
+                String paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, successUrl);
+                return "redirect:" + paymentUrl; // Chuyển hướng đến URL thanh toán
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Failed to initiate payment. Please try again.");
+                return "redirect:/checkout";
+            }
+        } else if ("cash".equalsIgnoreCase(paymentMethod)) {
+            // Xử lý thanh toán bằng tiền mặt
+            PaymentHistory paymentHistory = new PaymentHistory();
+            paymentHistory.setPaymentMethod(paymentMethod);
+            paymentHistory.setTotalAmount(totalPrice);
+            paymentHistory.setPaymentDate(new Date());
+            paymentHistoryService.savePaymentHistory(paymentHistory);
+
+            Purchase purchase = new Purchase();
+            purchase.setOrderId(UUID.randomUUID().toString());
+            purchase.setDate(new Date());
+            purchase.setStatus("Pending");
+            purchase.setPaymentHistory(paymentHistory);
+            purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
+
+            List<PurchaseItem> purchaseItems = cart.getCartItems().entrySet().stream().map(entry -> {
+                PurchaseItem purchaseItem = new PurchaseItem();
+                purchaseItem.setProduct(entry.getKey());
+                purchaseItem.setQuantity(entry.getValue());
+                purchaseItem.setPurchase(purchase);
+                return purchaseItem;
+            }).collect(Collectors.toList());
+
+            purchase.setPurchaseItems(purchaseItems);
+            purchaseService.savePurchase(purchase);
+
+            try {
+                String customerEmail = purchase.getUser().getEmail();
+                String subject = "Xác nhận đơn hàng - " + purchase.getOrderId();
+                String text = "Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận. Mã đơn hàng của bạn là: " + purchase.getOrderId();
+                emailService.sendEmail(customerEmail, subject, text);
+
+                redirectAttributes.addFlashAttribute("message", "Đơn hàng của bạn đã được xác nhận và email đã được gửi.");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Có lỗi khi gửi email xác nhận.");
+            }
+            cart.clearCart();
+            redirectAttributes.addFlashAttribute("message", "Thank you for your purchase! Your payment is completed.");
+            return "redirect:/home";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Invalid payment method.");
             return "redirect:/checkout";
         }
-
-        PaymentHistory paymentHistory = new PaymentHistory();
-        paymentHistory.setPaymentMethod(paymentMethod);
-        paymentHistory.setTotalAmount(totalPrice);
-        paymentHistory.setPaymentDate(new java.util.Date());
-        paymentHistoryService.savePaymentHistory(paymentHistory);
-
-        Purchase purchase = new Purchase();
-        purchase.setOrderId(UUID.randomUUID().toString());
-        purchase.setDate(new java.util.Date());
-        purchase.setTotalPrice(totalPrice);
-        purchase.setStatus("Pending");
-        purchase.setPaymentHistory(paymentHistory);
-        purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
-
-        List<PurchaseItem> purchaseItems = cart.getCartItems().entrySet().stream().map(entry -> {
-            PurchaseItem purchaseItem = new PurchaseItem();
-            purchaseItem.setProduct(entry.getKey());
-            purchaseItem.setQuantity(entry.getValue());
-            purchaseItem.setPurchase(purchase);
-            return purchaseItem;
-        }).collect(Collectors.toList());
-
-        purchase.setPurchaseItems(purchaseItems);
-        purchaseService.savePurchase(purchase);
-
-        cart.clearCart();
-        return "redirect:" + paymentUrl;
     }
 
     @GetMapping("/checkout/success")
@@ -149,9 +168,8 @@ public class CheckoutController {
     public ResponseEntity<?> createVnpayPayment(@RequestBody Map<String, Object> requestData) {
         try {
             double totalPrice = Double.parseDouble(requestData.get("totalPrice").toString());
-            String orderId = UUID.randomUUID().toString(); // Tạo mã đơn hàng duy nhất
-            String returnUrl = "http://localhost:8080/checkout/success"; // URL trả về sau khi thanh toán
-
+            String orderId = UUID.randomUUID().toString();
+            String returnUrl = "http://localhost:8080/checkout/success";
             String paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, returnUrl);
 
             Map<String, String> response = new HashMap<>();

@@ -22,11 +22,11 @@ public class PurchaseHistoryController {
     private PurchaseService purchaseService;
 
     @Autowired
-    private UserService userService; // Service để lấy thông tin người dùng hiện tại
+    private UserService userService;
 
     @GetMapping
     public String viewPurchaseHistory(Model model, Principal principal) {
-        Optional<User> currentUser = userService.findByEmail(principal.getName()); // Lấy người dùng hiện tại
+        Optional<User> currentUser = userService.findByEmail(principal.getName());
         List<Purchase> purchaseHistory = purchaseService.getPurchaseHistoryByUser(currentUser);
         model.addAttribute("purchaseHistory", purchaseHistory);
         return "purchase-history";

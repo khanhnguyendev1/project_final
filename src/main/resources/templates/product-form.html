@@ -1,92 +1,142 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm Sản Phẩm Mới</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Sản Phẩm</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
+        .form-container {
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 450px;
         }
-
-        label {
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
             display: block;
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
         }
-
-        input[type="text"], input[type="number"], textarea, select {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
-            margin-bottom: 20px;
+            font-size: 14px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
+            outline: none;
         }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #007bff;
+        }
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            background-color: #007bff;
+            color: #fff;
             border: none;
+            border-radius: 4px;
+            font-size: 16px;
             cursor: pointer;
+            margin-top: 10px;
         }
-
-        button:hover {
-            background-color: #45a049;
+        .btn-submit:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1 th:text="${#strings.isEmpty(product.id) ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h1>
+<div class="form-container">
+    <h2 th:text="${#strings.isEmpty(product.id) ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h2>
     <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
+        <!-- Tên sản phẩm -->
         <div class="form-group">
-            <label for="name">Tên sản phẩm:</label>
-            <input type="text" id="name" name="name" required/>
+            <label for="productName">Tên sản phẩm:</label>
+            <input type="text" id="productName" name="name" placeholder="Nhập tên sản phẩm" required>
         </div>
-
+        <!-- Giá -->
         <div class="form-group">
             <label for="price">Giá:</label>
-            <input type="number" id="price" name="price" required/>
+            <input type="number" id="price" name="price" placeholder="Nhập giá sản phẩm" required>
         </div>
-
+        <!-- Danh mục -->
         <div class="form-group">
-            <label for="imageFile">Hình ảnh: </label>
-            <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Mô tả:</label>
-            <textarea id="description" name="description" rows="4"></textarea>
-        </div>
-
-
-        <div class="form-group">
-            <label for="stock">Số lượng trong kho:</label>
-            <input type="number" id="stock" name="stock" required/>
+            <label for="category">Danh mục:</label>
+            <select id="category" name="category" required>
+                <option value="" disabled selected>Chọn danh mục</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}"></option>
+            </select>
         </div>
 
         <div class="form-group">
             <label for="brand">Thương hiệu:</label>
-            <input type="text" id="brand" name="brand" required/>
-        </div>
-
-        <div class="form-group">
-            <label for="category">Danh mục:</label>
-            <select id="category" name="category" required>
-                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+            <select id="brand" name="brand" required>
+                <option value="" disabled selected>Chọn thương hiệu</option>
+                <option th:each="brand : ${brands}"
+                        th:value="${brand.id}"
+                        th:text="${brand.name}"></option>
             </select>
         </div>
-
-
-        <button type="submit">Thêm Sản Phẩm</button>
+        <div class="form-group">
+            <label for="imageFile">Hình ảnh:</label>
+            <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Mô tả:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả sản phẩm"></textarea>
+        </div>
+        <!-- Số lượng -->
+        <div class="form-group">
+            <label for="stock">Số lượng trong kho:</label>
+            <input type="number" id="stock" name="stock" placeholder="Nhập số lượng sản phẩm" required>
+        </div>
+        <!-- Cấu hình sản phẩm -->
+        <div class="form-group">
+            <label for="processor">Bộ xử lý:</label>
+            <input type="text" id="processor" name="processor" placeholder="Nhập bộ xử lý">
+        </div>
+        <div class="form-group">
+            <label for="memory">Bộ nhớ:</label>
+            <input type="text" id="memory" name="memory" placeholder="Nhập bộ nhớ">
+        </div>
+        <div class="form-group">
+            <label for="storage">Dung lượng lưu trữ:</label>
+            <input type="text" id="storage" name="storage" placeholder="Nhập dung lượng lưu trữ">
+        </div>
+        <div class="form-group">
+            <label for="screenSize">Kích thước màn hình:</label>
+            <input type="text" id="screenSize" name="screenSize" placeholder="Nhập kích thước màn hình">
+        </div>
+        <!-- Gửi form -->
+        <button type="submit" class="btn-submit">Thêm Sản Phẩm</button>
     </form>
 </div>
 </body>

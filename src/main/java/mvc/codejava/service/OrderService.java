@@ -33,7 +33,6 @@ public class OrderService {
         Purchase purchase = new Purchase();
         purchase.setDate(new Date());
         purchase.setStatus("PENDING");  // Trạng thái ban đầu của đơn hàng
-        purchase.setTotalPrice(totalPrice);
 
         // Xử lý mã giảm giá (Coupon)
         if (couponCode != null && !couponCode.isEmpty()) {
@@ -42,14 +41,12 @@ public class OrderService {
                 purchase.setCoupon(coupon);
                 // Áp dụng giảm giá vào tổng giá
                 double discount = totalPrice * (coupon.getDiscount() / 100);
-                purchase.setTotalPrice(totalPrice - discount);
             }
         }
 
         // Xử lý thanh toán thẻ tín dụng (PaymentHistory)
         PaymentHistory paymentHistory = new PaymentHistory();
         paymentHistory.setPaymentMethod(paymentMethod);
-        paymentHistory.setTotalAmount(purchase.getTotalPrice());
         paymentHistory.setPaymentDate(new Date());
 
         // Lưu thông tin thanh toán trước

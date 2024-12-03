@@ -12,6 +12,8 @@ public class PurchaseItem {
 
     private int quantity;
 
+    private double priceAtPurchase;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
@@ -34,6 +36,14 @@ public class PurchaseItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getPriceAtPurchase() {
+        return priceAtPurchase;
+    }
+
+    public void setPriceAtPurchase(double priceAtPurchase) {
+        this.priceAtPurchase = priceAtPurchase;
     }
 
     public Product getProduct() {

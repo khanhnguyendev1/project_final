@@ -14,14 +14,23 @@ public class Product {
     private String name;
     private double price;
     private String description;
-    private String imageUrl;
     private int stock;
-    private String brand;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
+
+    @OneToOne
+    @JoinColumn(name = "product_detail_id")
+    private ProductDetail productDetail;
 
     @Override
     public boolean equals(Object o) {
@@ -61,14 +70,6 @@ public class Product {
         this.price = price;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -85,14 +86,6 @@ public class Product {
         this.stock = stock;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -101,4 +94,27 @@ public class Product {
         this.category = category;
     }
 
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public ProductDetail getProductDetail() {
+        return productDetail;
+    }
+
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
+    }
 }

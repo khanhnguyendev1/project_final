@@ -36,7 +36,6 @@ public class PurchaseService {
         if (existingPurchase.isPresent()) {
             Purchase purchase = existingPurchase.get();
             purchase.setDate(updatedPurchase.getDate());
-            purchase.setTotalPrice(updatedPurchase.getTotalPrice());
             purchase.setStatus(updatedPurchase.getStatus());
             purchase.setPaymentHistory(updatedPurchase.getPaymentHistory());
             purchase.setCoupon(updatedPurchase.getCoupon());

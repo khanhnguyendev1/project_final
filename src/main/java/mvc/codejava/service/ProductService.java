@@ -58,4 +58,12 @@ public class ProductService {
     public List<Product> searchProducts(String searchTerm) {
         return productRepository.searchByName(searchTerm);
     }
+
+    public List<Product> getProductsByCategoryAndBrand(Long categoryId, Long brandId) {
+        return productRepository.findByCategoryIdAndBrandId(categoryId, brandId);
+    }
+
+    public List<Product> getProductsByBrand(Long brandId) {
+        return productRepository.findByBrandId(brandId);
+    }
 }

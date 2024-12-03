@@ -16,7 +16,6 @@ public class Purchase {
     private String orderId;
     private Date date;
     private String status;
-    private double totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "payment_history_id")
@@ -70,14 +69,6 @@ public class Purchase {
 
     public void setPaymentHistory(PaymentHistory paymentHistory) {
         this.paymentHistory = paymentHistory;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     public String getStatus() {

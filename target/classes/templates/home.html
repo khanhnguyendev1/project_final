@@ -18,8 +18,8 @@
 		.content {
             display: flex;
             flex-direction: row;
-            justify-content: flex-end; /* Căn phần tử về bên phải */
-            gap: 20px; /* Khoảng cách giữa các phần tử */
+            justify-content: flex-end;
+            gap: 20px;
         }
         .header {
             background-color: #4CAF50;
@@ -52,7 +52,7 @@
         .products {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Center the products */
+            justify-content: center;
             margin: 20px;
         }
 
@@ -163,37 +163,51 @@
     		margin: 20px 0;
 		}
 
-		.filter select {
+		.filter {
+			display: flex;
+			flex-direction: column; /* Đặt các phần tử theo chiều dọc */
+			align-items: center; /* Căn giữa các phần tử theo chiều ngang */
+			justify-content: center; /* Căn giữa các phần tử theo chiều dọc */
+			gap: 15px; /* Khoảng cách giữa các phần tử */
+			max-width: 400px; /* Giới hạn chiều rộng của form */
+			margin: 50px auto; /* Đặt form ở giữa trang với khoảng cách phía trên và dưới */
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.filter select,
+		.filter button {
 			padding: 10px;
 			font-size: 16px;
-			border: 1px solid #ddd;
-			border-radius: 8px;
-			background-color: #f8f9fa;
-			color: #333;
-			width: 100%;
-			max-width: 300px;
-			appearance: none; /* Removes the default dropdown arrow for custom styling */
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			width: 100%; /* Đặt chiều rộng của select và button là 100% */
+		}
+
+		.filter button {
+			background-color: #007bff;
+			color: white;
 			cursor: pointer;
-			transition: all 0.3s ease;
+			transition: background-color 0.3s;
 		}
 
-		.filter select:hover {
-			background-color: #e9ecef;
+		.filter button:hover {
+			background-color: #0056b3;
 		}
 
-		.filter select:focus {
-			outline: none;
-			border-color: #4CAF50; /* Highlight border on focus */
-			box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-		}
+		/* Tùy chọn cho giao diện trên màn hình rộng */
+		@media (min-width: 600px) {
+			.filter {
+				flex-direction: row; /* Chuyển sang dạng hàng ngang khi màn hình rộng */
+				gap: 20px; /* Khoảng cách giữa các phần tử */
+			}
 
-
-		.filter select::after {
-			content: "\25BC"; /* Unicode for a downward arrow */
-			position: absolute;
-			right: 10px;
-			color: #333;
-			pointer-events: none;
+			.filter select,
+			.filter button {
+				width: auto; /* Chiều rộng tự động khi ở dạng row */
+			}
 		}
 	</style>
 </head>
@@ -204,7 +218,9 @@
 </div>
 <div class="container">
 	<div class="content">
-		<a href="/purchase-history" class="btn">Xem lịch sử mua hàng</a>
+		<form th:action="@{/purchase-history(userId=${userId})}" method="GET">
+			<button type="submit" class="btn">Xem lịch sử mua hàng</button>
+		</form>
 	</div>
 	<div class="d-flex justify-content-end align-items-center">
 		<a href="/cart" class="btn btn-primary" style="font-size: 18px;">
@@ -259,21 +275,31 @@
 <h2 style="text-align: center; margin: 20px;">Danh sách sản phẩm</h2>
 <div class="filter">
 	<form action="#" method="get">
-		<select name="category" onchange="this.form.submit()">
+		<select name="category">
 			<option value="">Tất cả danh mục</option>
 			<option th:each="category : ${categories}"
 					th:value="${category.id}"
 					th:text="${category.name}">
 			</option>
 		</select>
+
+		<select name="brand">
+			<option value="">Tất cả thương hiệu</option>
+			<option th:each="brand : ${brands}"
+					th:value="${brand.id}"
+					th:text="${brand.name}">
+			</option>
+		</select>
+
+		<button type="submit">Lọc</button>
 	</form>
 </div>
 <div class="products">
 	<div th:each="product : ${products}" class="product-card">
-		<img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" alt="Product Image" class="product-image" />
+		<img th:if="${product.image != null}" th:src="${product.image.url}" alt="Product Image" class="product-image" />
 		<h3 th:text="${product.name}">Tên sản phẩm</h3>
 		<p><strong>Giá:</strong> $<span th:text="${product.price}">0.00</span></p>
-		<p th:text="'Thương hiệu: ' + ${product.brand}">Thương hiệu</p>
+		<p th:text="'Thương hiệu: ' + ${product.brand.name}">Thương hiệu</p>
 		<a th:href="@{/products/{id}(id=${product.id})}" class="button">Xem chi tiết</a>
 		<a th:href="@{/products/edit/{id}(id=${product.id})}" class="button">Sửa</a>
 		<a th:href="@{/products/delete/{id}(id=${product.id})}" class="button" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</a>

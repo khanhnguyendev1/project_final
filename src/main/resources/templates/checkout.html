@@ -63,7 +63,7 @@
             box-sizing: border-box;
         }
 
-        button#submit {
+        button#submitBtn {
             width: 100%;
             padding: 12px 0;
             font-size: 18px;
@@ -75,7 +75,7 @@
             transition: background-color 0.3s;
         }
 
-        button#submit:hover {
+        button#submitBtn:hover {
             background-color: #218838;
         }
     </style>
@@ -97,32 +97,25 @@
     </ul>
     <p>Total Price: $<span th:text="${totalPrice}"></span></p>
 
-    <!-- Form thanh toán -->
     <form id="payment-form" method="post" action="/checkout/complete" th:action="@{/checkout/complete}">
-
-        <!-- Phương thức thanh toán -->
         <label for="paymentMethod">Payment Method:</label>
         <select id="paymentMethod" name="paymentMethod" required>
             <option value="cash">Cash</option>
             <option value="vnpay">VNPAY</option>
         </select>
-
-        <!-- Mã giảm giá -->
         <label for="couponCode">Coupon Code (optional):</label>
         <input type="text" id="couponCode" name="couponCode" placeholder="Enter your coupon code">
 
-        <button id="submit">Pay $<span th:text="${totalPrice}"></span></button>
+        <button id="submitBtn">Pay $<span th:text="${totalPrice}"></span></button>
     </form>
 
     <script type="text/javascript">
         document.querySelector("#payment-form").addEventListener("submit", (event) => {
-            event.preventDefault();
-
             const paymentMethod = document.getElementById("paymentMethod").value;
 
             if (paymentMethod === "vnpay") {
-                // Gửi yêu cầu đến server để tạo URL VNPAY
-                fetch('/vnpay/checkout', {
+                event.preventDefault(); // Chặn hành vi mặc định chỉ khi chọn VNPAY
+                fetch('/checkout/complete', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -134,7 +127,6 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.url) {
-                        // Chuyển hướng người dùng đến trang thanh toán VNPAY
                         window.location.href = data.url;
                     } else {
                         alert("Failed to create VNPAY payment URL.");
@@ -142,10 +134,8 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    alert("An error occurred during VNPAY payment.");
                 });
-            } else {
-                // Thanh toán bằng tiền mặt, submit form trực tiếp
-                event.target.submit();
             }
         });
     </script>
