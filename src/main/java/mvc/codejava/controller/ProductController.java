@@ -156,8 +156,10 @@ public class ProductController {
             return "redirect:/home";
         }
         List<Category> categories = categoryService.getAllCategories();
+        List<Brand> brands = brandService.getAllBrands();
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
         return "update-product"; // Trả về tên template
     }
 
