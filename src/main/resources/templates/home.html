@@ -50,31 +50,55 @@
         }
 
         .products {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px;
-        }
+			display: grid;
+			grid-template-columns: repeat(4, 1fr); /* 4 products per row */
+			gap: 20px; /* Space between products */
+			margin: 20px;
+		}
 
-        .product-card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            text-align: center;
-            width: 30%;
-            margin: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+		.product-card {
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			padding: 15px;
+			text-align: center;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
 
-        .product-card img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
+		.product-card img {
+			width: 100%;
+			height: auto;
+			border-radius: 5px;
+		}
 
-        .product-card:hover {
-            transform: scale(1.05);
-        }
+		.product-card:hover {
+			transform: scale(1.05);
+		}
+
+		.pagination {
+			display: flex;
+			justify-content: center;
+			margin: 20px 0;
+		}
+
+		.pagination a {
+			margin: 0 5px;
+			padding: 10px 15px;
+			text-decoration: none;
+			color: #007bff;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+
+		.pagination a.active {
+			background-color: #007bff;
+			color: white;
+			border-color: #007bff;
+		}
+
+		.pagination a:hover {
+			background-color: #0056b3;
+			color: white;
+		}
 
         .footer {
             background-color: #f1f1f1;
@@ -305,6 +329,10 @@
 		<a th:href="@{/products/delete/{id}(id=${product.id})}" class="button" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
 		<a th:href="@{/cart/add/{id}(id=${product.id})}" class="button">Thêm vào giỏ hàng</a>
 	</div>
+</div>
+
+<div class="pagination">
+	<a th:each="i : ${#numbers.sequence(1, totalPages)}" th:href="@{/home(page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'active' : ''">1</a>
 </div>
 
 <div class="footer">

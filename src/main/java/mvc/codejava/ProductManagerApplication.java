@@ -1,18 +1,12 @@
 package mvc.codejava;
 
-import mvc.codejava.entity.Role;
-import mvc.codejava.entity.User;
-import mvc.codejava.entity.UserRole;
 import mvc.codejava.repository.RoleRepository;
 import mvc.codejava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class ProductManagerApplication extends SpringBootServletInitializer {

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập Nhật Sản Phẩm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        img {
+            display: block;
+            margin-top: 10px;
+            max-width: 200px;
+            max-height: 200px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>Cập Nhật Sản Phẩm</h1>
+<form th:action="@{/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
+    <!-- Tên sản phẩm -->
+    <div class="form-group">
+        <label for="name">Tên Sản Phẩm:</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Nhập tên sản phẩm" required />
+    </div>
+
+    <!-- Giá sản phẩm -->
+    <div class="form-group">
+        <label for="price">Giá Sản Phẩm:</label>
+        <input type="number" id="price" th:field="*{price}" placeholder="Nhập giá sản phẩm" required />
+    </div>
+
+    <!-- Ảnh sản phẩm -->
+    <div class="form-group">
+        <label for="imageFile">Ảnh:</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*" />
+        <img th:if="${product.image.url != null}" th:src="${product.image.url}" alt="Product Image" />
+    </div>
+
+    <!-- Mô tả sản phẩm -->
+    <div class="form-group">
+        <label for="description">Mô Tả Sản Phẩm:</label>
+        <textarea id="description" th:field="*{description}" placeholder="Nhập mô tả sản phẩm"></textarea>
+    </div>
+
+    <!-- Thương hiệu -->
+    <div class="form-group">
+        <label for="brand">Thương Hiệu:</label>
+        <select id="brand" th:field="*{brand.id}" required>
+            <option value="" disabled selected>Chọn thương hiệu</option>
+            <option th:each="brand : ${brands}"
+                    th:value="${brand.id}"
+                    th:text="${brand.name}"
+                    th:selected="${brand.id == product.brand.id}"></option>
+        </select>
+    </div>
+
+    <!-- Số lượng -->
+    <div class="form-group">
+        <label for="stock">Số Lượng:</label>
+        <input type="number" id="stock" th:field="*{stock}" placeholder="Nhập số lượng sản phẩm" required />
+    </div>
+
+    <!-- Danh mục -->
+    <div class="form-group">
+        <label for="category">Danh Mục:</label>
+        <select id="category" th:field="*{category.id}" required>
+            <option value="" disabled selected>Chọn danh mục</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.id}"
+                    th:text="${category.name}"
+                    th:selected="${category.id == product.category.id}"></option>
+        </select>
+    </div>
+
+    <!-- Nút cập nhật -->
+    <button type="submit">Cập Nhật Sản Phẩm</button>
+</form>
+<a href="/home" class="back-link"><i class="fa fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
+</body>
+</html>

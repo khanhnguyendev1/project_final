@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử thanh toán</title>
+</head>
+<body>
+<h1>Lịch sử thanh toán</h1>
+<a href="/paymenthistories/add">Thêm lịch sử thanh toán mới</a>
+<table>
+    <thead>
+    <tr>
+        <th>Phương thức thanh toán</th>
+        <th>Tổng tiền</th>
+        <th>Ngày thanh toán</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="paymentHistory : ${paymentHistories}">
+        <td th:text="${paymentHistory.paymentMethod}">Phương thức thanh toán</td>
+        <td th:text="${paymentHistory.totalAmount}">Tổng tiền</td>
+        <td th:text="${#dates.format(paymentHistory.paymentDate, 'dd/MM/yyyy')}">Ngày thanh toán</td>
+        <td>
+            <a th:href="@{/paymenthistories/edit/{id}(id=${paymentHistory.id})}">Sửa</a>
+            <a th:href="@{/paymenthistories/delete/{id}(id=${paymentHistory.id})}">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

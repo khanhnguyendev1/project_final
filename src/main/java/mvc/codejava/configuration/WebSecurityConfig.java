@@ -1,6 +1,7 @@
 package mvc.codejava.configuration;
 
 import mvc.codejava.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private UserDetailsServiceImpl userDetailsService;
 
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -36,23 +40,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider());
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-				.antMatchers("/register", "/login").permitAll()
-				.antMatchers("/").permitAll()
-				.anyRequest().authenticated()
+				.antMatchers("/admin/**").hasRole("ADMIN")
+				.antMatchers("/user/**").hasRole("USER")
+				.antMatchers("/", "/login", "/register","/home").permitAll()
 				.and()
 				.formLogin()
 				.loginPage("/login")
-				.defaultSuccessUrl("/home", true)
+				.usernameParameter("email") // Sử dụng email thay vì username
+				.defaultSuccessUrl("/", true)
 				.permitAll()
 				.and()
 				.logout()
+				.logoutUrl("/logout")
+				.logoutSuccessUrl("/login?logout")
 				.permitAll();
 	}
 }

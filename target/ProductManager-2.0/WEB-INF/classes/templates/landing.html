@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Trang chủ - Cửa hàng Hi-Tech</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+	<style>
+		body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons a {
+            background-color: white;
+            color: #4CAF50;
+            border: 2px solid white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .auth-buttons a:hover {
+            background-color: #45a049;
+            color: white;
+            border: 2px solid #45a049;
+        }
+
+        .banner {
+            background-image: url('/images/banner.jpg');
+            background-size: cover;
+            height: 300px;
+            text-align: center;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .banner h1 {
+            font-size: 3em;
+        }
+
+        .products {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        .product {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            width: 30%;
+        }
+
+        .product img {
+            width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 1em;
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+        }
+	</style>
+</head>
+<body>
+<div class="header">
+	<h1>Chào mừng đến với Hi-Tech Store</h1>
+	<div class="auth-buttons">
+		<a th:href="@{/login}">Đăng nhập</a>
+		<a th:href="@{/register}">Đăng ký</a>
+	</div>
+</div>
+
+<!-- Banner -->
+<div class="banner">
+	<h1>Sản phẩm công nghệ cao cấp</h1>
+</div>
+
+<!-- Danh sách sản phẩm nổi bật -->
+<h2 style="text-align: center; margin: 20px;">Sản phẩm nổi bật</h2>
+<div class="products">
+	<div class="product">
+		<img src="images/image1.jpg" alt="Laptop">
+		<h3>Laptop Cao Cấp</h3>
+		<p>Giá: 20,000,000 VND</p>
+		<a class="button" th:href="@{/login}">Thêm vào giỏ hàng</a>
+	</div>
+	<div class="product">
+		<img src="images/image3.jpg" alt="Điện thoại">
+		<h3>Điện thoại thông minh</h3>
+		<p>Giá: 10,000,000 VND</p>
+		<a class="button" th:href="@{/login}">Thêm vào giỏ hàng</a>
+	</div>
+	<div class="product">
+		<img src="images/image2.jpg" alt="Chuột máy tính">
+		<h3>Chuột Máy Tính Gaming</h3>
+		<p>Giá: 500,000 VND</p>
+		<a class="button" th:href="@{/login}">Thêm vào giỏ hàng</a>
+	</div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+	<p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+	<p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
+</div>
+</body>
+</html>

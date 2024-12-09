@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .checkout-container {
+            width: 90%;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px 40px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button#submitBtn {
+            width: 100%;
+            padding: 12px 0;
+            font-size: 18px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button#submitBtn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<h2>Checkout</h2>
+
+<div th:if="${cartItems.isEmpty()}">
+    <p>Your cart is empty!</p>
+</div>
+
+<div th:unless="${cartItems.isEmpty()}">
+    <ul>
+        <li th:each="item : ${cartItems}">
+            <span th:text="${item.key.name}">Product Name</span> -
+            <span th:text="${item.value}">Quantity</span> -
+            <span th:text="${item.key.price}">Price</span>
+        </li>
+    </ul>
+    <p>Total Price: $<span th:text="${totalPrice}"></span></p>
+
+    <form id="payment-form" method="post" action="/checkout/complete" th:action="@{/checkout/complete}">
+        <label for="paymentMethod">Payment Method:</label>
+        <select id="paymentMethod" name="paymentMethod" required>
+            <option value="cash">Cash</option>
+            <option value="vnpay">VNPAY</option>
+        </select>
+        <label for="couponCode">Coupon Code (optional):</label>
+        <input type="text" id="couponCode" name="couponCode" placeholder="Enter your coupon code">
+
+        <button id="submitBtn">Pay $<span th:text="${totalPrice}"></span></button>
+    </form>
+
+    <script type="text/javascript">
+        document.querySelector("#payment-form").addEventListener("submit", (event) => {
+            const paymentMethod = document.getElementById("paymentMethod").value;
+
+            if (paymentMethod === "vnpay") {
+                event.preventDefault(); // Chặn hành vi mặc định chỉ khi chọn VNPAY
+                fetch('/checkout/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        totalPrice: [[${totalPrice}]]
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        alert("Failed to create VNPAY payment URL.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred during VNPAY payment.");
+                });
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

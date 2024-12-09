@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lịch sử mua hàng</title>
+</head>
+<body>
+<h2>Lịch sử mua hàng</h2>
+
+<div th:if="${purchaseHistory.isEmpty()}">
+    <p>Bạn chưa có đơn hàng nào.</p>
+</div>
+
+<div th:unless="${purchaseHistory.isEmpty()}">
+    <table>
+        <thead>
+        <tr>
+            <th>Mã đơn hàng</th>
+            <th>Ngày mua</th>
+            <th>Trạng thái</th>
+            <th>Tổng tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="purchase : ${purchaseHistory}">
+            <td th:text="${purchase.id}"></td>
+            <td th:text="${purchase.date}"></td>
+            <td th:text="${purchase.status}"></td>
+            <td th:text="${purchase.totalPrice}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

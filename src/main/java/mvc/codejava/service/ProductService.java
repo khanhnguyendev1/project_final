@@ -3,6 +3,8 @@ package mvc.codejava.service;
 import mvc.codejava.entity.Product;
 import mvc.codejava.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,10 +25,6 @@ public class ProductService {
     public void saveProduct(Product product) {
         // Lưu sản phẩm vào cơ sở dữ liệu
         productRepository.save(product);
-    }
-
-    public List<Product> getAllProducts() {
-        return productRepository.findAll(); // Lấy tất cả sản phẩm từ cơ sở dữ liệu
     }
 
     public Product findById(Long id) {
@@ -51,19 +49,27 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public List<Product> getProductsByCategory(Long categoryId) {
-        return productRepository.findByCategoryId(categoryId);
+    public Page<Product> getProductsByCategoryAndBrand(Long categoryId, Long brandId, Pageable pageable) {
+        return productRepository.findByCategoryIdAndBrandId(categoryId, brandId, pageable);
     }
 
-    public List<Product> searchProducts(String searchTerm) {
-        return productRepository.searchByName(searchTerm);
+    public Page<Product> getProductsByCategory(Long categoryId, Pageable pageable) {
+        return productRepository.findByCategoryId(categoryId, pageable);
     }
 
-    public List<Product> getProductsByCategoryAndBrand(Long categoryId, Long brandId) {
-        return productRepository.findByCategoryIdAndBrandId(categoryId, brandId);
+    public Page<Product> getProductsByBrand(Long brandId, Pageable pageable) {
+        return productRepository.findByBrandId(brandId, pageable);
     }
 
-    public List<Product> getProductsByBrand(Long brandId) {
-        return productRepository.findByBrandId(brandId);
+    public Page<Product> searchProducts(String search, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCase(search, pageable);
+    }
+
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public Page<Product> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }
