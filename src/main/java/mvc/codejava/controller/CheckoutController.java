@@ -55,6 +55,9 @@ public class CheckoutController {
     @PostMapping("/checkout/complete")
     public String completeCheckout(@RequestParam("paymentMethod") String paymentMethod,
                                    @RequestParam(value = "couponCode", required = false) String couponCode,
+                                   @RequestParam(value = "name", required = false) String name,
+                                   @RequestParam(value = "address", required = false) String address,
+                                   @RequestParam(value = "phone", required = false) String phone,
                                    HttpSession session,
                                    Model model,
                                    RedirectAttributes redirectAttributes) {
@@ -77,19 +80,25 @@ public class CheckoutController {
         }
 
         double totalPrice = cart.getTotalPrice();
-        if (totalPrice < 0.5) {
-            redirectAttributes.addFlashAttribute("error", "Total amount must be at least 0.5 USD for payment.");
-            return "redirect:/checkout";
-        }
+
+        Purchase purchase = new Purchase();
+        purchase.setDate(new Date());
+        purchase.setStatus("Pending");
+        purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
+        purchase.setName(name);
+        purchase.setAddress(address);
+        purchase.setPhone(phone);
+
+        purchaseService.savePurchase(purchase);
 
         if ("vnpay".equalsIgnoreCase(paymentMethod)) {
             try {
-                String orderId = UUID.randomUUID().toString();
+
+                // Tạo URL thanh toán với id của purchase
                 String successUrl = "http://localhost:8080/checkout/success";
                 String cancelUrl = "http://localhost:8080/checkout/cancel";
-
-                String paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, successUrl);
-                return "redirect:" + paymentUrl; // Chuyển hướng đến URL thanh toán
+                String paymentUrl = vnPayService.createPaymentUrl(totalPrice, purchase.getId().toString(), successUrl);
+                return "redirect:" + paymentUrl;
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("error", "Failed to initiate payment. Please try again.");
                 return "redirect:/checkout";
@@ -102,12 +111,12 @@ public class CheckoutController {
             paymentHistory.setPaymentDate(new Date());
             paymentHistoryService.savePaymentHistory(paymentHistory);
 
-            Purchase purchase = new Purchase();
-            purchase.setOrderId(UUID.randomUUID().toString());
-            purchase.setDate(new Date());
-            purchase.setStatus("Pending");
+            purchase.setStatus("Completed");
             purchase.setPaymentHistory(paymentHistory);
             purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
+
+
+            purchaseService.updatePurchase(purchase);
 
             List<PurchaseItem> purchaseItems = cart.getCartItems().entrySet().stream().map(entry -> {
                 PurchaseItem purchaseItem = new PurchaseItem();
@@ -118,12 +127,12 @@ public class CheckoutController {
             }).collect(Collectors.toList());
 
             purchase.setPurchaseItems(purchaseItems);
-            purchaseService.savePurchase(purchase);
+            purchaseService.updatePurchase(purchase);
 
             try {
                 String customerEmail = purchase.getUser().getEmail();
-                String subject = "Xác nhận đơn hàng - " + purchase.getOrderId();
-                String text = "Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận. Mã đơn hàng của bạn là: " + purchase.getOrderId();
+                String subject = "Xác nhận đơn hàng - " + purchase.getId();
+                String text = "Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận. Mã đơn hàng của bạn là: " + purchase.getId();
                 emailService.sendEmail(customerEmail, subject, text);
 
                 redirectAttributes.addFlashAttribute("message", "Đơn hàng của bạn đã được xác nhận và email đã được gửi.");
@@ -144,8 +153,8 @@ public class CheckoutController {
                                  Model model, RedirectAttributes redirectAttributes) {
         boolean isValid = vnPayService.validatePaymentResponse(responseParams);
         if (isValid) {
-            String orderId = responseParams.get("vnp_TxnRef");
-            Purchase purchase = purchaseService.findByOrderId(orderId);
+            Long purchaseId = Long.parseLong(responseParams.get("vnp_TxnRef")); // Parse the ID from the response
+            Purchase purchase = purchaseService.findById(purchaseId);
             if (purchase != null) {
                 purchase.setStatus("Completed");
                 purchaseService.updatePurchase(purchase);
@@ -168,9 +177,10 @@ public class CheckoutController {
     public ResponseEntity<?> createVnpayPayment(@RequestBody Map<String, Object> requestData) {
         try {
             double totalPrice = Double.parseDouble(requestData.get("totalPrice").toString());
-            String orderId = UUID.randomUUID().toString();
+            Long purchaseId = Long.parseLong(requestData.get("purchaseId").toString());  // Get purchaseId from request data
+            Purchase purchase = purchaseService.findById(purchaseId);  // Fetch the purchase using the purchaseId
             String returnUrl = "http://localhost:8080/checkout/success";
-            String paymentUrl = vnPayService.createPaymentUrl(totalPrice, orderId, returnUrl);
+            String paymentUrl = vnPayService.createPaymentUrl(totalPrice, String.valueOf(purchaseId), returnUrl);  // Use purchaseId
 
             Map<String, String> response = new HashMap<>();
             response.put("url", paymentUrl);

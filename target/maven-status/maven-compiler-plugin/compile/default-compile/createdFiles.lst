@@ -9,7 +9,6 @@ mvc\codejava\controller\CouponController.class
 mvc\codejava\controller\AppController.class
 mvc\codejava\repository\ProductDetailRepository.class
 mvc\codejava\service\ProductDetailService.class
-mvc\codejava\controller\AdminController.class
 mvc\codejava\service\CustomerService.class
 mvc\codejava\service\VnPayService.class
 mvc\codejava\entity\User.class
@@ -45,7 +44,6 @@ mvc\codejava\controller\PurchaseHistoryController.class
 mvc\codejava\entity\PaymentHistory.class
 mvc\codejava\service\ImageService.class
 mvc\codejava\entity\ProductDetail.class
-mvc\codejava\component\DataInitializer.class
 mvc\codejava\controller\UserController.class
 mvc\codejava\service\BrandService.class
 mvc\codejava\configuration\MvcConfig.class

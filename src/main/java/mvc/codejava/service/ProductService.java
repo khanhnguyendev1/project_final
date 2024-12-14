@@ -65,6 +65,26 @@ public class ProductService {
         return productRepository.findByNameContainingIgnoreCase(search, pageable);
     }
 
+    public Page<Product> getProductsByPrice(Double minPrice, Double maxPrice, Pageable pageable) {
+        return productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+    }
+
+    public Page<Product> getProductsByCategoryAndPrice(Long categoryId, Double minPrice, Double maxPrice, Pageable pageable) {
+        return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice, pageable);
+    }
+
+    public Page<Product> getProductsByBrandAndPrice(Long brandId, Double minPrice, Double maxPrice, Pageable pageable) {
+        return productRepository.findByBrandIdAndPriceBetween(brandId, minPrice, maxPrice, pageable);
+    }
+
+    public Page<Product> getProductsByCategoryAndBrandAndPrice(Long categoryId, Long brandId, Double minPrice, Double maxPrice, Pageable pageable) {
+        return productRepository.findByCategoryIdAndBrandIdAndPriceBetween(categoryId, brandId, minPrice, maxPrice, pageable);
+    }
+
+    public Page<Product> searchProductsByPrice(String search, Double minPrice, Double maxPrice, Pageable pageable) {
+        return productRepository.findByNameContainingOrDescriptionContainingAndPriceBetween(search, search, minPrice, maxPrice, pageable);
+    }
+
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }

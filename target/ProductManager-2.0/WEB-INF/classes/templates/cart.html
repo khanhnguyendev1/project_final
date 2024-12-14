@@ -7,27 +7,54 @@
     <style>
         .button {
             padding: 5px 10px;
-            margin: 5px;
+            margin: 0;
             background-color: #4CAF50;
             color: white;
             border: none;
-            cursor: pointer;
         }
+
         .button:hover {
             background-color: #45a049;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
         th, td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
+        th {
+            text-align: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quantity-control span {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            min-width: 40px;
+        }
+
         .actions {
             display: flex;
             gap: 10px;
+            justify-content: center;
+        }
+
+        td {
+            text-align: center;
         }
     </style>
 </head>
@@ -41,6 +68,7 @@
             <th>Sản phẩm</th>
             <th>Số lượng</th>
             <th>Giá</th>
+            <th>Thành tiền</th>
             <th>Thao tác</th>
         </tr>
         </thead>
@@ -48,12 +76,15 @@
         <tr th:each="entry : ${cartItems}">
             <td th:text="${entry.key.name}">Tên sản phẩm</td>
             <td>
-                <span th:text="${entry.value}">Số lượng</span>
+                <div class="quantity-control">
+                    <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
+                    <span th:text="${entry.value}">Số lượng</span>
+                    <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
+                </div>
             </td>
             <td th:text="${entry.key.price} + ' $'">Giá</td>
+            <td th:text="${entry.key.price * entry.value} + ' $'">Total</td>
             <td class="actions">
-                <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
-                <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
                 <a th:href="@{/cart/remove/{id}(id=${entry.key.id})}" class="button">Xóa</a>
             </td>
         </tr>
@@ -67,6 +98,3 @@
 
 </body>
 </html>
-
-
-

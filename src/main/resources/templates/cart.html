@@ -5,33 +5,77 @@
     <title>Giỏ hàng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
         .button {
             padding: 5px 10px;
-            margin: 5px;
+            margin: 0;
             background-color: #4CAF50;
             color: white;
             border: none;
-            cursor: pointer;
         }
+
         .button:hover {
             background-color: #45a049;
         }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
         th, td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
+        th {
+            text-align: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quantity-control span {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            min-width: 40px;
+        }
+
         .actions {
             display: flex;
             gap: 10px;
+            justify-content: center;
+        }
+
+        td {
+            text-align: center;
         }
     </style>
 </head>
 <body>
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
 <h1>Giỏ hàng của bạn</h1>
 
 <form action="/checkout" method="get">
@@ -41,6 +85,7 @@
             <th>Sản phẩm</th>
             <th>Số lượng</th>
             <th>Giá</th>
+            <th>Thành tiền</th>
             <th>Thao tác</th>
         </tr>
         </thead>
@@ -48,12 +93,15 @@
         <tr th:each="entry : ${cartItems}">
             <td th:text="${entry.key.name}">Tên sản phẩm</td>
             <td>
-                <span th:text="${entry.value}">Số lượng</span>
+                <div class="quantity-control">
+                    <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
+                    <span th:text="${entry.value}">Số lượng</span>
+                    <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
+                </div>
             </td>
             <td th:text="${entry.key.price} + ' $'">Giá</td>
+            <td th:text="${entry.key.price * entry.value} + ' $'">Total</td>
             <td class="actions">
-                <a th:href="@{/cart/increase/{id}(id=${entry.key.id})}" class="button">+</a>
-                <a th:href="@{/cart/decrease/{id}(id=${entry.key.id})}" class="button">-</a>
                 <a th:href="@{/cart/remove/{id}(id=${entry.key.id})}" class="button">Xóa</a>
             </td>
         </tr>
@@ -67,6 +115,3 @@
 
 </body>
 </html>
-
-
-

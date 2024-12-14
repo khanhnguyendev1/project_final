@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="add-product">
+    <a href="/products/add" class="button">Thêm sản phẩm mới</a>
+</div>
+<a th:href="@{/products/edit/{id}(id=${product.id})}" class="button">Sửa</a>
+<a th:href="@{/products/delete/{id}(id=${product.id})}" class="button" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
+</body>
+</html>

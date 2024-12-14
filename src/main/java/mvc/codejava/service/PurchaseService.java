@@ -26,10 +26,6 @@ public class PurchaseService {
         return purchaseRepository.findByUser(user);
     }
 
-    public Purchase findByOrderId(String orderId) {
-        return purchaseRepository.findByOrderId(orderId);
-    }
-
     public Purchase updatePurchase(Purchase updatedPurchase) {
         // Ensure the purchase exists before updating
         Optional<Purchase> existingPurchase = purchaseRepository.findById(updatedPurchase.getId());
@@ -44,5 +40,9 @@ public class PurchaseService {
         } else {
             throw new IllegalArgumentException("Purchase not found with ID: " + updatedPurchase.getId());
         }
+    }
+
+    public Purchase findById(Long id) {
+        return purchaseRepository.findById(id).orElse(null);
     }
 }

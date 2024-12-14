@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class VnPayService {
 
-    public String createPaymentUrl(double amount, String returnUrl, String orderId) {
+    public String createPaymentUrl(double amount, String returnUrl, String purchaseId) {
 
         String vnp_TmnCode = "6TQAY7Y1";
         String vnp_HashSecret = "58WBET5Z4GZF4MR6Z50698T8K0SRH42F";
@@ -23,10 +23,10 @@ public class VnPayService {
             vnpParams.put("vnp_OrderInfo", "Order Information");
             vnpParams.put("vnp_Amount", String.valueOf(amount * 100));
             vnpParams.put("vnp_ReturnUrl", returnUrl);
-            vnpParams.put("vnp_OrderId", orderId);
+            vnpParams.put("vnp_Id", purchaseId);
             vnpParams.put("vnp_Currency", "VND");
             vnpParams.put("vnp_Locale", "vn");
-            vnpParams.put("vnp_TxnRef", orderId);
+            vnpParams.put("vnp_TxnRef", purchaseId);
             vnpParams.put("vnp_CreateDate", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 
 

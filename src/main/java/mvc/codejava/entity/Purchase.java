@@ -12,8 +12,6 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String orderId;
     private Date date;
     private String status;
 
@@ -25,11 +23,15 @@ public class Purchase {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST)
     private List<PurchaseItem> purchaseItems;
 
     @ManyToOne
     private User user;
+
+    private String name;
+    private String address;
+    private String phone;
 
     public Long getId() {
         return id;
@@ -87,11 +89,27 @@ public class Purchase {
         this.user = user;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public String getName() {
+        return name;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

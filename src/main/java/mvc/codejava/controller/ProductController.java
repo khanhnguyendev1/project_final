@@ -40,6 +40,8 @@ public class ProductController {
             @RequestParam(value = "category", required = false) Long categoryId,
             @RequestParam(value = "brand", required = false) Long brandId,
             @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "minPrice", defaultValue = "0") Double minPrice,
+            @RequestParam(value = "maxPrice", defaultValue = "10000") Double maxPrice,
             @RequestParam(value = "page", defaultValue = "1") int page,
             Model model) {
 
@@ -48,16 +50,25 @@ public class ProductController {
 
         Page<Product> productPage;
 
-        // Xử lý bộ lọc
-        if (categoryId != null && brandId != null) {
-            productPage = productService.getProductsByCategoryAndBrand(categoryId, brandId, pageable);
-        } else if (categoryId != null) {
-            productPage = productService.getProductsByCategory(categoryId, pageable);
-        } else if (brandId != null) {
-            productPage = productService.getProductsByBrand(brandId, pageable);
-        } else if (search != null && !search.isEmpty()) {
-            productPage = productService.searchProducts(search, pageable);
-        } else {
+        if (categoryId == null && brandId == null && (search == null || search.isEmpty())) {
+            productPage = productService.getProductsByPrice(minPrice, maxPrice, pageable);
+        }
+        else if (categoryId == null && brandId == null && (search == null || search.isEmpty())) {
+            productPage = productService.getAllProducts(pageable);
+        }
+        else if (categoryId != null && brandId != null) {
+            productPage = productService.getProductsByCategoryAndBrandAndPrice(categoryId, brandId, minPrice, maxPrice, pageable);
+        }
+        else if (categoryId != null) {
+            productPage = productService.getProductsByCategoryAndPrice(categoryId, minPrice, maxPrice, pageable);
+        }
+        else if (brandId != null) {
+            productPage = productService.getProductsByBrandAndPrice(brandId, minPrice, maxPrice, pageable);
+        }
+        else if (search != null && !search.isEmpty()) {
+            productPage = productService.searchProductsByPrice(search, minPrice, maxPrice, pageable);
+        }
+        else {
             productPage = productService.getAllProducts(pageable);
         }
 
@@ -67,7 +78,9 @@ public class ProductController {
         model.addAttribute("products", productPage.getContent()); // Danh sách sản phẩm
         model.addAttribute("currentPage", productPage.getNumber() + 1); // Trang hiện tại
         model.addAttribute("totalPages", productPage.getTotalPages()); // Tổng số trang
-        model.addAttribute("search", search); // Dữ liệu tìm kiếm
+        model.addAttribute("search", search);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
 
         return "home";
     }
