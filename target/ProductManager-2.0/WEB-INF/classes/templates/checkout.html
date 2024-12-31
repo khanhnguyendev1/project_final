@@ -98,6 +98,15 @@
     <p>Total Price: $<span th:text="${totalPrice}"></span></p>
 
     <form id="payment-form" method="post" action="/checkout/complete" th:action="@{/checkout/complete}">
+        <label for="name">Recipient Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter recipient's name" required>
+
+        <label for="address">Recipient Address:</label>
+        <input type="text" id="address" name="address" placeholder="Enter recipient's address" required>
+
+        <label for="phone">Recipient Phone:</label>
+        <input type="text" id="phone" name="phone" placeholder="Enter recipient's phone number" required>
+
         <label for="paymentMethod">Payment Method:</label>
         <select id="paymentMethod" name="paymentMethod" required>
             <option value="cash">Cash</option>

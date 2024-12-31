@@ -3,151 +3,248 @@
 <head>
     <title>Checkout</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f6f9;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            margin-top: 5px;
         }
 
         .checkout-container {
-            width: 90%;
+            flex: 1;
+            width: 100%;
             max-width: 600px;
             background-color: #ffffff;
-            padding: 20px 40px;
+            margin: 20px auto;
+            padding: 30px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            text-align: center;
         }
 
         h2 {
-            font-size: 24px;
+            font-size: 28px;
             color: #333;
-            text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-weight: 600;
         }
 
         ul {
             list-style-type: none;
             padding: 0;
-            margin: 0 0 20px 0;
+            margin: 0;
         }
 
         li {
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        li span {
+            color: #555;
         }
 
         label {
             font-size: 16px;
             color: #666;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             display: block;
+            text-align: left;
+            margin-top: 15px;
         }
 
         input[type="text"],
         select {
             width: 100%;
-            padding: 8px 12px;
+            padding: 12px;
             font-size: 16px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #4caf50;
+            outline: none;
+        }
+
+        .total-price {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .total-price span {
+            color: #4caf50;
         }
 
         button#submitBtn {
             width: 100%;
-            padding: 12px 0;
+            padding: 15px;
             font-size: 18px;
-            background-color: #28a745;
+            background-color: #4caf50;
             color: #ffffff;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
         }
 
         button#submitBtn:hover {
-            background-color: #218838;
+            background-color: #388e3c;
+        }
+
+        .cancelBtn {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cancelBtn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 1em;
+            width: 100%;
+        }
+
+        .footer p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
-<h2>Checkout</h2>
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
+<div class="checkout-container">
+    <h2>Thanh toán</h2>
 
-<div th:if="${cartItems.isEmpty()}">
-    <p>Your cart is empty!</p>
+    <div th:if="${cartItems.isEmpty()}" class="empty-cart">
+        <p>Your cart is empty!</p>
+    </div>
+
+    <div th:unless="${cartItems.isEmpty()}">
+        <ul>
+            <li th:each="item : ${cartItems}">
+                <span th:text="${item.key.name}">Tên sản phẩm</span> -
+                <span th:text="${item.value}">Số lượng</span> -
+                <span th:text="${item.key.price}">Giá</span>
+            </li>
+        </ul>
+
+        <div class="total-price">
+            <p>Thành tiền: $<span th:text="${totalPrice}">0</span></p>
+        </div>
+
+        <form id="payment-form" method="post" action="/checkout/complete" th:action="@{/checkout/complete}">
+            <label for="name">Tên người nhận:</label>
+            <input type="text" id="name" name="name" placeholder="Nhập tên người nhận" required>
+
+            <label for="address">Địa chỉ nhận hàng:</label>
+            <input type="text" id="address" name="address" placeholder="Nhập địa chỉ nhận hàng" required>
+
+            <label for="phone">Số điện thoại:</label>
+            <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
+
+            <label for="paymentMethod"> Phương thức thanh toán:</label>
+            <select id="paymentMethod" name="paymentMethod" required>
+                <option value="cash">Tiền mặt</option>
+                <option value="vnpay">VNPAY</option>
+            </select>
+
+            <label for="couponCode">Mã giảm giá (tùy chọn):</label>
+            <input type="text" id="couponCode" name="couponCode" placeholder="Nhập mã giảm giá">
+
+            <button id="submitBtn" type="submit">Thanh toán $<span th:text="${totalPrice}"></span></button>
+        </form>
+
+        <div class="checkout-buttons">
+            <button class="cancelBtn" type="button" onclick="window.location.href='/home'">Hủy đơn hàng</button>
+        </div>
+    </div>
 </div>
 
-<div th:unless="${cartItems.isEmpty()}">
-    <ul>
-        <li th:each="item : ${cartItems}">
-            <span th:text="${item.key.name}">Product Name</span> -
-            <span th:text="${item.value}">Quantity</span> -
-            <span th:text="${item.key.price}">Price</span>
-        </li>
-    </ul>
-    <p>Total Price: $<span th:text="${totalPrice}"></span></p>
+<script type="text/javascript">
+    document.querySelector("#payment-form").addEventListener("submit", (event) => {
+        const paymentMethod = document.getElementById("paymentMethod").value;
 
-    <form id="payment-form" method="post" action="/checkout/complete" th:action="@{/checkout/complete}">
-        <label for="name">Recipient Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter recipient's name" required>
-
-        <label for="address">Recipient Address:</label>
-        <input type="text" id="address" name="address" placeholder="Enter recipient's address" required>
-
-        <label for="phone">Recipient Phone:</label>
-        <input type="text" id="phone" name="phone" placeholder="Enter recipient's phone number" required>
-
-        <label for="paymentMethod">Payment Method:</label>
-        <select id="paymentMethod" name="paymentMethod" required>
-            <option value="cash">Cash</option>
-            <option value="vnpay">VNPAY</option>
-        </select>
-        <label for="couponCode">Coupon Code (optional):</label>
-        <input type="text" id="couponCode" name="couponCode" placeholder="Enter your coupon code">
-
-        <button id="submitBtn">Pay $<span th:text="${totalPrice}"></span></button>
-    </form>
-
-    <script type="text/javascript">
-        document.querySelector("#payment-form").addEventListener("submit", (event) => {
-            const paymentMethod = document.getElementById("paymentMethod").value;
-
-            if (paymentMethod === "vnpay") {
-                event.preventDefault(); // Chặn hành vi mặc định chỉ khi chọn VNPAY
-                fetch('/checkout/complete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        totalPrice: [[${totalPrice}]]
-                    })
+        if (paymentMethod === "vnpay") {
+            event.preventDefault(); // Prevent default submission when VNPAY is selected
+            fetch('/checkout/complete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    totalPrice: [[${totalPrice}]]
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        window.location.href = data.url;
-                    } else {
-                        alert("Failed to create VNPAY payment URL.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred during VNPAY payment.");
-                });
-            }
-        });
-    </script>
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert("Failed to create VNPAY payment URL.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred during VNPAY payment.");
+            });
+        }
+    });
+</script>
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
 </div>
 </body>
 </html>

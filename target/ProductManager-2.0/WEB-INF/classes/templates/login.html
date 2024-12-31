@@ -31,7 +31,7 @@
             font-weight: bold;
         }
 
-        input[type="email"],
+        input[type="text"],
         input[type="password"] {
             width: 100%;
             padding: 8px;
@@ -92,8 +92,11 @@
 <div class="container">
     <form th:action="@{/login}" method="post">
         <h2>Đăng nhập</h2>
+
+        <!-- Thông báo lỗi -->
+        <p class="error-message" th:if="${param.error}" th:text="'Lỗi: ' + ${param.error}"></p>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="username" required/>
+        <input type="text" id="email" name="username" required/>
 
         <label for="password">Mật khẩu:</label>
         <input type="password" id="password" name="password" required/>

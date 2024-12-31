@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard Admin</title>
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .header h1 {
+            color:white;
+        }
+        /* Container for the page */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading */
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        /* Styling the logout link */
+        .logout-link {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            background-color: #e44d47;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            float: right;
+            margin-top: -30px;
+        }
+
+        .logout-link:hover {
+            background-color: #d43f37;
+        }
+
+        /* Card container for admin functions */
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Individual cards */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            flex-basis: 30%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Card title */
+        .card h3 {
+            color: #4CAF50;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        /* Card description */
+        .card p {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Button style inside card */
+        .card a {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .card a:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 1em;
+            margin-top: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                flex-basis: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
+
+<div class="container">
+    <h1>Welcome to the Admin Dashboard</h1>
+    <a th:href="@{/login}" class="logout-link">Đăng xuất</a>
+
+    <div class="card-container">
+        <div class="card">
+            <h3>Quản lý người dùng</h3>
+            <p>Thêm, sửa, xóa người dùng</p>
+            <a th:href="@{/admin/users}">Quản lý người dùng</a>
+        </div>
+
+        <div class="card">
+            <h3>Quản lý sản phẩm</h3>
+            <p>Thêm, sửa, xóa sản phẩm</p>
+            <a th:href="@{/admin/products}">Quản lý sản phẩm</a>
+        </div>
+
+        <div class="card">
+            <h3>Đơn hàng</h3>
+            <p>Xem và quản lý đơn hàng</p>
+            <a th:href="@{/admin/all-orders}" class="button">Xem Tất Cả Đơn Hàng</a>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
+</div>
+</body>
+</html>

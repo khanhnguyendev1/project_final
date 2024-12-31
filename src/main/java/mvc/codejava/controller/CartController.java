@@ -1,4 +1,5 @@
 package mvc.codejava.controller;
+import jakarta.servlet.http.HttpSession;
 import mvc.codejava.entity.CartItem;
 import mvc.codejava.service.CartService;
 import mvc.codejava.entity.Product;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,32 +1,237 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Danh sách sản phẩm</title>
+    <title>Quản lý Sản phẩm</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .header h1 {
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons a {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .action-buttons a:hover {
+            background-color: #45a049;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .search-bar button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+        }
+
+        table img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #4CAF50;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover {
+            background-color: #45a049;
+            color: white;
+        }
+
+        .action-buttons .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .action-buttons .btn-primary {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+        }
+
+        .action-buttons .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .action-buttons .btn-danger {
+            background-color: #FF4136;
+            color: white;
+            border: none;
+        }
+
+        .action-buttons .btn-danger:hover {
+            background-color: #C12C1B;
+            transform: scale(1.05);
+        }
+        .footer {
+			background-color: #f1f1f1;
+			text-align: center;
+			padding: 1em;
+			margin-top: 20px;
+			width: 100%;
+		}
+    </style>
 </head>
 <body>
-<h1>Danh sách sản phẩm</h1>
 
-<form method="get" action="/products">
-    <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm sản phẩm..." />
-    <button type="submit">Tìm kiếm</button>
-</form>
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
 
-<table>
-    <thead>
-    <tr>
-        <th>Tên sản phẩm</th>
-        <th>Giá</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="product : ${products}">
-        <td th:text="${product.name}">Tên sản phẩm</td>
-        <td th:text="${product.price} + ' $'">Giá</td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <div class="action-buttons">
+        <a th:href="@{/admin/dashboard}">Trở về trang Dashboard</a>
+        <a th:href="@{/admin/products/add}">Thêm sản phẩm mới</a>
+    </div>
 
-<a href="/home">Quay lại trang chủ</a>
+    <!-- Search bar -->
+    <div class="search-bar">
+        <form action="/admin/products" method="get">
+            <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." />
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </div>
+
+    <!-- Product Table -->
+    <table>
+        <thead>
+        <tr>
+            <th>Hình ảnh</th>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Thương hiệu</th>
+            <th>Giá</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td>
+                <img th:src="@{${product.image.url}}" alt="Hình sản phẩm" />
+            </td>
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.brand.name}"></td>
+            <td th:text="${product.price}"></td>
+            <td>
+                <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-primary">Chỉnh sửa</a>
+                <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" class="btn btn-danger"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <a th:each="i : ${pages}" th:href="@{/admin/products?page=${i}}"
+           th:text="${i}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
+    </div>
+</div>
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
+</div>
 </body>
 </html>

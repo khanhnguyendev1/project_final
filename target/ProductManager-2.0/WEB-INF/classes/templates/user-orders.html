@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh Sách Đơn Hàng</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+<h2>Danh Sách Đơn Hàng của Người Dùng</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Ngày Đặt Hàng</th>
+        <th>Trạng Thái</th>
+        <th>Tổng Giá</th>
+        <th>Chi Tiết</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase : ${purchases}">
+        <td th:text="${purchase.id}"></td>
+        <td th:text="${purchase.date}"></td>
+        <td th:text="${purchase.status}"></td>
+        <td th:text="${purchase.totalPrice}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

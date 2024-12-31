@@ -229,26 +229,25 @@
 	<p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
 </div>
 <div class="container">
-	<div class="content">
-		<form th:action="@{/purchase-history(userId=${userId})}" method="GET">
+	<div class="content d-flex justify-content-between align-items-center">
+		<form th:action="@{/purchase-history(userId=${userId})}" method="GET" class="d-flex align-items-center">
 			<button type="submit" class="btn">Xem lịch sử mua hàng</button>
 		</form>
-	</div>
-	<div class="d-flex justify-content-end align-items-center">
-		<a href="/cart" class="btn btn-primary" style="font-size: 18px;">
-			<i class="bi bi-cart" style="font-size: 24px;"></i> Cart
-		</a>
-		<div class="user-info">
-			<span>Xin chào, <span th:text="${username}">Tên người dùng</span></span>
-			<a th:href="@{/login}">Đăng xuất</a>
-		</div>
-	</div>
 
-	<div class="d-flex justify-content-center my-4">
 		<form method="get" action="/home" class="input-group w-50">
 			<input type="text" name="search" th:value="${search}" class="form-control" placeholder="Tìm kiếm sản phẩm..." aria-label="Tìm kiếm sản phẩm..." />
 			<button class="btn btn-primary" type="submit">Tìm kiếm</button>
 		</form>
+
+		<div class="d-flex align-items-center">
+			<a href="/cart" class="btn btn-primary" style="font-size: 18px;">
+				<i class="bi bi-cart" style="font-size: 24px;"></i> Cart
+			</a>
+			<div class="user-info ms-3">
+				<span>Xin chào, <span th:text="${username}">Tên người dùng</span></span>
+				<a th:href="@{/login}" class="ms-2">Đăng xuất</a>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -261,13 +260,13 @@
 
 	<div class="carousel-inner">
 		<div class="carousel-item active">
-			<img src="images/anh1.jpg" class="d-block w-100" alt="Banner 1">
+			<img src="images/anh4.jpg" class="d-block w-100" alt="Banner 1">
 		</div>
 		<div class="carousel-item">
-			<img src="images/anh4.jpg" class="d-block w-100" alt="Banner 2">
+			<img src="images/anh5.jpg" class="d-block w-100" alt="Banner 2">
 		</div>
 		<div class="carousel-item">
-			<img src="images/anh5.jpg" class="d-block w-100" alt="Banner 3">
+			<img src="images/anh1.jpg" class="d-block w-100" alt="Banner 3">
 		</div>
 	</div>
 
@@ -280,10 +279,10 @@
 		<span class="sr-only">Next</span>
 	</a>
 </div>
-
 <div class="add-product">
 	<a href="/products/add" class="button">Thêm sản phẩm mới</a>
 </div>
+
 <h2 style="text-align: center; margin: 20px;">Danh sách sản phẩm</h2>
 <div class="filter">
 	<form action="#" method="get">
@@ -303,6 +302,11 @@
 			</option>
 		</select>
 
+		<div class="price-range">
+			<label for="minPriceInput">Từ: <input type="number" id="minPriceInput" name="minPrice" value="0" min="0" max="10000" /></label>
+			<label for="maxPriceInput">Đến: <input type="number" id="maxPriceInput" name="maxPrice" value="10000" min="0" max="10000" /></label>
+		</div>
+
 		<button type="submit">Lọc</button>
 	</form>
 </div>
@@ -313,8 +317,6 @@
 		<p><strong>Giá:</strong> $<span th:text="${product.price}">0.00</span></p>
 		<p th:text="'Thương hiệu: ' + ${product.brand.name}">Thương hiệu</p>
 		<a th:href="@{/products/{id}(id=${product.id})}" class="button">Xem chi tiết</a>
-		<a th:href="@{/products/edit/{id}(id=${product.id})}" class="button">Sửa</a>
-		<a th:href="@{/products/delete/{id}(id=${product.id})}" class="button" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
 		<a th:href="@{/cart/add/{id}(id=${product.id})}" class="button">Thêm vào giỏ hàng</a>
 	</div>
 </div>

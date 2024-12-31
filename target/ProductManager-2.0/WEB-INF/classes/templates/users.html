@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý người dùng</title>
+    <style>
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .add-user, .back-dashboard {
+            margin: 20px 0;
+        }
+
+        /* CSS for the 'Back to Dashboard' button */
+        .back-dashboard a {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-dashboard a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
+
+<h1>Quản lý người dùng</h1>
+
+<!-- Link to go back to Dashboard -->
+<div class="back-dashboard">
+    <a th:href="@{/admin/dashboard}">Trở về trang Dashboard</a>
+</div>
+
+<div class="add-user">
+    <a th:href="@{/admin/users/add}">Thêm người dùng mới</a>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên người dùng</th>
+        <th>Email</th>
+        <th>Vai trò</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.fullName}"></td>
+        <td th:text="${user.email}"></td>
+        <td>
+            <ul>
+                <li th:each="role : ${user.role}" th:text="${role.name}"></li>
+            </ul>
+        </td>
+        <td>
+            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}">Chỉnh sửa</a> |
+            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

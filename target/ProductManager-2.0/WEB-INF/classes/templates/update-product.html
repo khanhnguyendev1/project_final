@@ -51,7 +51,7 @@
 </head>
 <body>
 <h1>Cập Nhật Sản Phẩm</h1>
-<form th:action="@{/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
+<form th:action="@{/admin/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
     <!-- Tên sản phẩm -->
     <div class="form-group">
         <label for="name">Tên Sản Phẩm:</label>

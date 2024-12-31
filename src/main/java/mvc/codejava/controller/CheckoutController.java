@@ -1,19 +1,19 @@
 package mvc.codejava.controller;
 
-import mvc.codejava.entity.Coupon;
-import mvc.codejava.entity.PaymentHistory;
-import mvc.codejava.entity.Purchase;
-import mvc.codejava.entity.PurchaseItem;
+import jakarta.servlet.http.HttpSession;
+import mvc.codejava.entity.*;
 import mvc.codejava.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +31,9 @@ public class CheckoutController {
 
     @Autowired
     private PaymentHistoryService paymentHistoryService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PurchaseService purchaseService;
@@ -62,6 +65,17 @@ public class CheckoutController {
                                    Model model,
                                    RedirectAttributes redirectAttributes) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Tìm người dùng từ database
+        Optional<User> optionalUser = userService.findByEmail(username);
+        if (optionalUser.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "User not found. Please login again.");
+            return "redirect:/login";
+        }
+        User user = optionalUser.get();
+
         CartService cart = (CartService) session.getAttribute("cart");
         if (cart == null) {
             cart = new CartService();
@@ -79,15 +93,17 @@ public class CheckoutController {
             }
         }
 
-        double totalPrice = cart.getTotalPrice();
+        double totalPrice = cart.calculateTotal();
 
         Purchase purchase = new Purchase();
         purchase.setDate(new Date());
         purchase.setStatus("Pending");
         purchase.setCoupon(discount > 0 ? couponService.findByCode(couponCode) : null);
+        purchase.setTotalPrice(totalPrice);
         purchase.setName(name);
         purchase.setAddress(address);
         purchase.setPhone(phone);
+        purchase.setUser(user);
 
         purchaseService.savePurchase(purchase);
 
@@ -107,7 +123,7 @@ public class CheckoutController {
             // Xử lý thanh toán bằng tiền mặt
             PaymentHistory paymentHistory = new PaymentHistory();
             paymentHistory.setPaymentMethod(paymentMethod);
-            paymentHistory.setTotalAmount(totalPrice);
+            paymentHistory.setTotalAmount(purchase.getTotalPrice());
             paymentHistory.setPaymentDate(new Date());
             paymentHistoryService.savePaymentHistory(paymentHistory);
 
@@ -119,10 +135,16 @@ public class CheckoutController {
             purchaseService.updatePurchase(purchase);
 
             List<PurchaseItem> purchaseItems = cart.getCartItems().entrySet().stream().map(entry -> {
+                Product product = entry.getKey();
+                Integer quantity = entry.getValue();
+
                 PurchaseItem purchaseItem = new PurchaseItem();
-                purchaseItem.setProduct(entry.getKey());
-                purchaseItem.setQuantity(entry.getValue());
+                purchaseItem.setProduct(product);
+                purchaseItem.setProductName(product.getName()); // Lấy tên sản phẩm
+                purchaseItem.setPriceAtPurchase(product.getPrice()); // Lấy giá sản phẩm tại thời điểm mua
+                purchaseItem.setQuantity(quantity);
                 purchaseItem.setPurchase(purchase);
+
                 return purchaseItem;
             }).collect(Collectors.toList());
 
@@ -141,7 +163,7 @@ public class CheckoutController {
             }
             cart.clearCart();
             redirectAttributes.addFlashAttribute("message", "Thank you for your purchase! Your payment is completed.");
-            return "redirect:/home";
+            return "redirect:/checkout/confirmation";
         } else {
             redirectAttributes.addFlashAttribute("error", "Invalid payment method.");
             return "redirect:/checkout";
@@ -189,5 +211,11 @@ public class CheckoutController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating VNPAY payment URL.");
         }
+    }
+
+    @GetMapping("/checkout/confirmation")
+    public String orderConfirmation(Model model) {
+        model.addAttribute("message", "Bạn đã đặt hàng thành công! Chúng tôi sẽ kiểm tra và xử lý đơn hàng của bạn.");
+        return "order-confirmation";
     }
 }

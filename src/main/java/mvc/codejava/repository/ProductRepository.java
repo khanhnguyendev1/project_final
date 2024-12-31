@@ -33,6 +33,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByNameContainingOrDescriptionContainingAndPriceBetween(
             String name, String description, Double minPrice, Double maxPrice, Pageable pageable);
+
+    Page<Product> findByNameContainingIgnoreCaseOrBrandNameContainingIgnoreCase(String name, String brandName, Pageable pageable);
 }
 
 

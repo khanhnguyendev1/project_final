@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách đơn hàng</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .header h1 {
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 30px;
+            color: #444;
+        }
+
+        table {
+            width: 80%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .actions a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 10px;
+            font-size: 14px;
+            color: white;
+            background-color: #28a745;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .actions a:hover {
+            background-color: #218838;
+        }
+
+        .actions a.delete {
+            background-color: #dc3545;
+        }
+
+        .actions a.delete:hover {
+            background-color: #c82333;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+			background-color: #f1f1f1;
+			text-align: center;
+			padding: 1em;
+			margin-top: 20px;
+		}
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
+
+<h1>Danh sách đơn hàng</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Mã đơn hàng</th>
+        <th>Ngày đặt</th>
+        <th>Trạng thái</th>
+        <th>Tổng tiền</th>
+        <th>Khách hàng</th>
+        <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase : ${purchases}">
+        <td th:text="${purchase.id}">1</td>
+        <td th:text="${purchase.date}">2024-12-23</td>
+        <td th:text="${purchase.status}">Đang xử lý</td>
+        <td th:text="${purchase.totalPrice}">1000000</td>
+        <td th:each="user: ${purchase.user}" th:text="${user.fullName}">Nguyen Van A</td>
+        <td class="actions">
+            <a th:href="@{/admin/purchase/{id}(id=${purchase.id})}">Xem chi tiết</a>
+            <a class="delete" th:href="@{/admin/purchase/delete/{id}(id=${purchase.id})}">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="button-container">
+    <a class="back-button" th:href="@{/admin/dashboard}">Trở về dashboard</a>
+</div>
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
+</div>
+</body>
+</html>

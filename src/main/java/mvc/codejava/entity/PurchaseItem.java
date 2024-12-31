@@ -1,6 +1,7 @@
 package mvc.codejava.entity;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "purchase_item")
@@ -11,14 +12,14 @@ public class PurchaseItem {
     private Long id;
 
     private int quantity;
-
+    private String productName;
     private double priceAtPurchase;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne()
+    @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
 
@@ -36,6 +37,14 @@ public class PurchaseItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public double getPriceAtPurchase() {

@@ -1,9 +1,10 @@
 package mvc.codejava.controller;
 
+import mvc.codejava.entity.Role;
 import mvc.codejava.entity.User;
 import mvc.codejava.repository.RoleRepository;
-import mvc.codejava.repository.UserRepository;
 import mvc.codejava.service.CustomerService;
+import mvc.codejava.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -19,13 +20,13 @@ public class AuthController {
     private CustomerService customerService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -35,9 +36,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute User user, Model model) {
+        Role defaultRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Default role not found"));
+
+        // Mã hóa mật khẩu và gán role mặc định
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(defaultRole);
+
+        // Lưu người dùng thông qua service
         if (customerService.register(user) != null) {
             return "redirect:/login";
         }
+
+        // Hiển thị lỗi nếu email đã tồn tại
         model.addAttribute("error", "Email đã tồn tại");
         return "register";
     }

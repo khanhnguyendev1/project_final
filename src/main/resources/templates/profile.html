@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin cá nhân</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1.5em;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin: 0;
+            color: white;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            margin: 0.5em 0 0;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .profile-info {
+            margin: 20px 0;
+        }
+
+        .profile-info label {
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .profile-info p {
+            font-size: 1.2rem;
+            margin: 0 0 20px 0;
+            color: #333;
+            padding: 10px 15px;
+            background: #f7f7f7;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.3rem;
+            padding: 10px 20px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .back-link a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 1.5em;
+            margin-top: auto;
+            width: 100%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
+<div class="profile-container">
+    <h1>Thông tin cá nhân</h1>
+    <div class="profile-info">
+        <label>Họ và tên:</label>
+        <p th:text="${fullName}">Nguyen Van A</p>
+
+        <label>Email:</label>
+        <p th:text="${email}">example@gmail.com</p>
+
+        <label>Số điện thoại:</label>
+        <p th:text="${phoneNumber}">0123456789</p>
+
+        <label>Địa chỉ:</label>
+        <p th:text="${address}">123 Street, City</p>
+
+        <label>Sinh nhật:</label>
+        <p th:text="${dateOfBirth}">01/01/1990</p>
+    </div>
+    <div class="back-link">
+        <a href="/home">Quay lại trang chủ</a>
+    </div>
+</div>
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
+</div>
+</body>
+</html>

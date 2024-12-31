@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết đơn hàng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 0;
+            margin: 0;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #444;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button-container a {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .button-container a:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container .delete {
+            background-color: #dc3545;
+        }
+
+        .button-container .delete:hover {
+            background-color: #c82333;
+        }
+
+        .button-container .back {
+            background-color: #28a745;
+        }
+
+        .button-container .back:hover {
+            background-color: #218838;
+        }
+        .footer {
+			background-color: #f1f1f1;
+			text-align: center;
+			padding: 1em;
+			margin-top: 20px;
+		}
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
+
+<h2>Chi tiết đơn hàng</h2>
+
+<p><strong>Mã đơn hàng:</strong> <span th:text="${purchase.id}"></span></p>
+<p><strong>Ngày tạo:</strong> <span th:text="${purchase.date}"></span></p>
+<p><strong>Tổng tiền:</strong> <span th:text="${purchase.totalPrice}"></span></p>
+<p><strong>Trạng thái:</strong> <span th:text="${purchase.status}"></span></p>
+
+<h3>Danh sách sản phẩm trong đơn hàng</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Tên sản phẩm</th>
+        <th>Số lượng</th>
+        <th>Giá</th>
+        <th>Tổng tiền</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${purchase.purchaseItems}">
+        <td th:text="${item.product.name}"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.product.price}"></td>
+        <td th:text="${item.quantity * item.product.price}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="button-container">
+    <a class="delete" th:href="@{/admin/purchase/delete/{id}(id=${purchase.id})}">Xóa đơn hàng</a>
+    <a class="back" th:href="@{/admin/all-orders}">Trở về danh sách đơn hàng</a>
+</div>
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
+</div>
+</body>
+</html>

@@ -5,103 +5,183 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
             flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .header h1 {
+            color: white;
         }
 
         .container {
-            width: 100%;
-            max-width: 800px;
+            flex: 1;
+            max-width: 1000px;
+            width: 90%;
+            margin: 20px auto;
             background-color: #fff;
-            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: left;
-            overflow-y: auto;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow: hidden;
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 28px;
-            text-align: center;
+        .product-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .product-image {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
+            flex: 1;
+            max-width: 40%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-image img {
+            width: 100%;
             border-radius: 8px;
-            margin-bottom: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        h2 {
-            color: #444;
+        .product-info {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-info h2 {
             font-size: 24px;
-            margin: 1rem 0;
-            text-align: center;
+            color: #222;
+            margin-bottom: 10px;
         }
 
-        p {
+        .product-info p {
             font-size: 16px;
             color: #555;
-            line-height: 1.6;
-            margin: 0.5rem 0;
+            margin: 5px 0;
         }
 
-        p strong {
-            color: #333;
+        .product-price {
+            font-size: 22px;
+            color: #e74c3c;
+            font-weight: bold;
         }
 
-        a {
-            display: inline-block;
+        .product-specs {
             margin-top: 20px;
-            padding: 10px 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            max-width: 300px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-specs h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .product-specs p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .product-specs p strong {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons a {
+            display: inline-block;
+            padding: 8px 12px;
+            font-size: 14px;
+            text-align: center;
             color: #fff;
-            background-color: #007bff;
             text-decoration: none;
             border-radius: 4px;
+            background-color: #007bff;
             transition: background-color 0.3s ease;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        a:hover {
+        .action-buttons a:hover {
             background-color: #0056b3;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #e0e0e0;
+            position: relative;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
-
+<div class="header">
+    <h1>Chào mừng đến với Hi-Tech Store</h1>
+    <p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
+</div>
 <div class="container">
-    <h1>Chi Tiết Sản Phẩm</h1>
+    <div class="header">
+        <h1>Chi Tiết Sản Phẩm</h1>
+    </div>
 
-    <h2 th:text="${product.name}">Tên sản phẩm</h2>
-    <img th:src="@{${product.image.url}}" alt="Ảnh Sản Phẩm" class="product-image">
+    <div class="product-detail">
+        <div class="product-image">
+            <img th:src="@{${product.image.url}}" alt="Ảnh Sản Phẩm">
+        </div>
 
-    <p><strong>Giá:</strong> $<span th:text="${product.price}">0.00</span></p>
-    <p><strong>Mô tả:</strong> <span th:text="${product.description}">Mô tả sản phẩm ở đây</span></p>
-    <p><strong>Số lượng:</strong> <span th:text="${product.stock}">0</span></p>
-    <p><strong>Thương hiệu:</strong> <span th:text="${product.brand.name}">Thương hiệu ở đây</span></p>
-    <p><strong>Danh mục:</strong> <span th:text="${product.category.name}">Danh mục ở đây</span></p>
+        <div class="product-info">
+            <h2 th:text="${product.name}">Tên sản phẩm</h2>
+            <p><strong>Giá:</strong> <span class="product-price" th:text="${product.price}">$0.00</span></p>
+            <p><strong>Số lượng:</strong> <span th:text="${product.stock}">0</span></p>
+            <p><strong>Thương hiệu:</strong> <span th:text="${product.brand.name}">Thương hiệu</span></p>
+            <p><strong>Danh mục:</strong> <span th:text="${product.category.name}">Danh mục</span></p>
+        </div>
+    </div>
 
-    <h3>Chi Tiết Sản Phẩm</h3>
-    <p><strong>Processor:</strong> <span th:text="${product.productDetail.processor}">Processor ở đây</span></p>
-    <p><strong>Memory:</strong> <span th:text="${product.productDetail.memory}">Memory ở đây</span></p>
-    <p><strong>Storage:</strong> <span th:text="${product.productDetail.storage}">Storage ở đây</span></p>
-    <p><strong>Screen Size:</strong> <span th:text="${product.productDetail.screenSize}">Screen Size ở đây</span></p>
+    <div class="action-buttons">
+        <a href="#" th:href="@{/cart/add/{productId}(productId=${product.id})}">Thêm vào Giỏ Hàng</a>
+        <a href="/home">Quay lại Trang Chủ</a>
+    </div>
 
-    <a href="/home">Quay lại Trang Chủ</a>
+    <div class="product-specs">
+        <h3>Thông Số Kỹ Thuật</h3>
+        <p><strong>Processor:</strong> <span th:text="${product.productDetail.processor}">Processor</span></p>
+        <p><strong>Memory:</strong> <span th:text="${product.productDetail.memory}">Memory</span></p>
+        <p><strong>Storage:</strong> <span th:text="${product.productDetail.storage}">Storage</span></p>
+        <p><strong>Screen Size:</strong> <span th:text="${product.productDetail.screenSize}">Screen Size</span></p>
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2024 Hi-Tech Store. Mọi quyền được bảo lưu.</p>
+    <p>Liên hệ: support@hitechstore.com | 1800-123-456</p>
 </div>
 
 </body>

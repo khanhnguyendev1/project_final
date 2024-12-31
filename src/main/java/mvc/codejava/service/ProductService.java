@@ -1,9 +1,12 @@
 package mvc.codejava.service;
 
 import mvc.codejava.entity.Product;
+import mvc.codejava.entity.PurchaseItem;
 import mvc.codejava.repository.ProductRepository;
+import mvc.codejava.repository.PurchaseItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +24,9 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+
+    @Autowired
+    private PurchaseItemRepository purchaseItemRepository;
 
     public void saveProduct(Product product) {
         // Lưu sản phẩm vào cơ sở dữ liệu
@@ -46,7 +52,18 @@ public class ProductService {
 
     // Xóa sản phẩm
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+
+        // Xóa tham chiếu product khỏi tất cả các PurchaseItem liên quan
+        List<PurchaseItem> purchaseItems = purchaseItemRepository.findByProduct(product);
+        for (PurchaseItem item : purchaseItems) {
+            item.setProduct(null);
+            purchaseItemRepository.save(item);
+        }
+
+        // Sau khi xóa tham chiếu, xóa sản phẩm
+        productRepository.delete(product);;
     }
 
     public Page<Product> getProductsByCategoryAndBrand(Long categoryId, Long brandId, Pageable pageable) {
@@ -90,6 +107,20 @@ public class ProductService {
     }
 
     public Page<Product> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public List<Product> getAllProductss() {
+        return productRepository.findAll();
+    }
+
+    public Page<Product> searchProducts(String keyword, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return productRepository.findByNameContainingIgnoreCaseOrBrandNameContainingIgnoreCase(keyword, keyword, pageable);
+    }
+
+    public Page<Product> getAllProducts(int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
         return productRepository.findAll(pageable);
     }
 }

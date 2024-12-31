@@ -1,6 +1,8 @@
 package mvc.codejava.entity;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Purchase {
 
     private Date date;
     private String status;
+    private Double totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "payment_history_id")
@@ -23,10 +26,11 @@ public class Purchase {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PurchaseItem> purchaseItems;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     private String name;
@@ -111,5 +115,13 @@ public class Purchase {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

@@ -6,80 +6,98 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 	<style>
 		body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f8f9fa;
+		}
+
+		.header {
+			background-color: #4CAF50;
+			color: white;
+			text-align: center;
+			padding: 1em 0;
+		}
+
+		.banner {
+			background-image: url('/images/banner.jpg');
+			background-size: cover;
+			height: 300px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: white;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+		}
+
+		.banner h1 {
+			font-size: 3em;
+		}
+
 		.content {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            gap: 20px;
-        }
-        .header {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 1em;
-        }
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 20px;
+			background-color: white;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			margin-bottom: 20px;
+		}
 
-        .banner {
-            background-image: url('/images/banner.jpg');
-            background-size: cover;
-            height: 300px;
-            text-align: center;
-            color: blue;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .banner h1 {
-            font-size: 3em;
-            font-color: black;
-        }
-
-        .add-product {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .products {
+		.products {
 			display: grid;
-			grid-template-columns: repeat(4, 1fr); /* 4 products per row */
-			gap: 20px; /* Space between products */
-			margin: 20px;
+			grid-template-columns: repeat(4, 1fr); /* Luôn chia thành 4 cột */
+			gap: 30px; /* Tăng khoảng cách giữa các sản phẩm */
+			margin: 20px 20px 40px; /* Thêm khoảng cách dưới để tách sản phẩm và phân trang */
 		}
 
 		.product-card {
+			background-color: white;
 			border: 1px solid #ddd;
-			border-radius: 5px;
+			border-radius: 8px;
 			padding: 15px;
 			text-align: center;
 			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			width: 100%; /* Đảm bảo các sản phẩm có cùng kích thước */
+			height: 380px; /* Cố định chiều cao để các sản phẩm đều nhau */
+			display: flex;
+			flex-direction: column; /* Sắp xếp các phần tử theo cột */
+			justify-content: space-between; /* Tách phần nút ra xa phần nội dung */
 		}
 
 		.product-card img {
 			width: 100%;
-			height: auto;
+			height: 180px;
+			object-fit: cover;
 			border-radius: 5px;
+			margin-bottom: 10px; /* Khoảng cách giữa ảnh và tên sản phẩm */
 		}
 
-		.product-card:hover {
-			transform: scale(1.05);
+		.product-card h3 {
+			font-size: 1.1em;
+			margin: 5px 0;
+		}
+
+		.product-card p {
+			font-size: 0.9em;
+			margin: 5px 0;
+		}
+
+		.product-card .btn {
+			margin: 5px 0; /* Khoảng cách giữa các nút */
 		}
 
 		.pagination {
 			display: flex;
 			justify-content: center;
 			margin: 20px 0;
+			gap: 10px; /* Tăng khoảng cách giữa các nút phân trang */
 		}
-
 		.pagination a {
 			margin: 0 5px;
 			padding: 10px 15px;
@@ -100,93 +118,17 @@
 			color: white;
 		}
 
-        .footer {
-            background-color: #f1f1f1;
-            text-align: center;
-            padding: 1em;
-            margin-top: 20px;
-        }
-
-        .button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px 2px;
-            cursor: pointer;
-            border-radius: 5px; /* Rounded corners for buttons */
-        }
-
-		.user-info {
-            display: flex;
-            justify-content: flex-end;
-            margin-right: 20px;
-            margin-top: 10px;
-        }
-
-        .user-info span {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        .user-info a {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .user-info a:hover {
-            background-color: #45a049;
-        }
-		.product-image {
-    		width: 200px;
-    		height: 200px;
-    		object-fit: cover;
-    		border-radius: 8px;
-		}
-
-		#homeCarousel {
-            position: relative;
-            width: 100%;
-            height: 300px; /* Giảm chiều cao của carousel */
-            overflow: hidden;
-        }
-
-        .carousel-item {
-            height: 100%;
-        }
-
-        .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Đảm bảo ảnh không bị méo và phù hợp kích thước carousel */
-            object-position: center; /* Đặt trung tâm ảnh */
-        }
-
-		.filter form {
-    		display: flex;
-    		justify-content: center;
-    		margin: 20px 0;
-		}
-
 		.filter {
 			display: flex;
-			flex-direction: column; /* Đặt các phần tử theo chiều dọc */
-			align-items: center; /* Căn giữa các phần tử theo chiều ngang */
-			justify-content: center; /* Căn giữa các phần tử theo chiều dọc */
-			gap: 15px; /* Khoảng cách giữa các phần tử */
-			max-width: 400px; /* Giới hạn chiều rộng của form */
-			margin: 50px auto; /* Đặt form ở giữa trang với khoảng cách phía trên và dưới */
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			gap: 15px;
 			padding: 20px;
-			background-color: #fff;
+			background-color: white;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 			border-radius: 8px;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			margin-bottom: 20px;
 		}
 
 		.filter select,
@@ -195,7 +137,6 @@
 			font-size: 16px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
-			width: 100%; /* Đặt chiều rộng của select và button là 100% */
 		}
 
 		.filter button {
@@ -209,17 +150,31 @@
 			background-color: #0056b3;
 		}
 
-		/* Tùy chọn cho giao diện trên màn hình rộng */
-		@media (min-width: 600px) {
-			.filter {
-				flex-direction: row; /* Chuyển sang dạng hàng ngang khi màn hình rộng */
-				gap: 20px; /* Khoảng cách giữa các phần tử */
-			}
+		.footer {
+			background-color: #f1f1f1;
+			text-align: center;
+			padding: 1em;
+			margin-top: 20px;
+		}
 
-			.filter select,
-			.filter button {
-				width: auto; /* Chiều rộng tự động khi ở dạng row */
-			}
+		.user-info {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+		}
+
+		.user-info .dropdown-toggle {
+			background-color: #4CAF50;
+			border: none;
+			color: white;
+			padding: 8px 15px;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.user-info .dropdown-menu {
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 		}
 	</style>
 </head>
@@ -228,99 +183,69 @@
 	<h1>Chào mừng đến với Hi-Tech Store</h1>
 	<p>Chuyên cung cấp các sản phẩm máy tính và linh kiện</p>
 </div>
+
 <div class="container">
-	<div class="content d-flex justify-content-between align-items-center">
-		<form th:action="@{/purchase-history(userId=${userId})}" method="GET" class="d-flex align-items-center">
-			<button type="submit" class="btn">Xem lịch sử mua hàng</button>
-		</form>
-
+	<div class="content">
+		<!-- Thanh tìm kiếm -->
 		<form method="get" action="/home" class="input-group w-50">
-			<input type="text" name="search" th:value="${search}" class="form-control" placeholder="Tìm kiếm sản phẩm..." aria-label="Tìm kiếm sản phẩm..." />
-			<button class="btn btn-primary" type="submit">Tìm kiếm</button>
+			<input type="text" name="search" th:value="${search}" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+			<button class="btn btn-primary" type="submit">Tìm</button>
 		</form>
 
-		<div class="d-flex align-items-center">
-			<a href="/cart" class="btn btn-primary" style="font-size: 18px;">
-				<i class="bi bi-cart" style="font-size: 24px;"></i> Cart
-			</a>
-			<div class="user-info ms-3">
-				<span>Xin chào, <span th:text="${username}">Tên người dùng</span></span>
-				<a th:href="@{/login}" class="ms-2">Đăng xuất</a>
-			</div>
+		<!-- Nút giỏ hàng -->
+		<a href="/cart" class="btn btn-primary">
+			<i class="bi bi-cart"></i> Cart
+		</a>
+
+		<!-- Menu người dùng -->
+		<div class="dropdown">
+			<button class="btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+				Xin chào, <span th:text="${fullName}">Tên người dùng</span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="userDropdown">
+				<li><a class="dropdown-item" th:href="@{/user/profile}">Tài Khoản Của Tôi</a></li>
+				<li><a class="dropdown-item" th:href="@{/purchase-history(userId=${userId})}">Đơn Mua</a></li>
+				<li><a class="dropdown-item" th:href="@{/logout}">Đăng Xuất</a></li>
+			</ul>
 		</div>
 	</div>
 </div>
 
-<div id="homeCarousel" class="carousel slide" data-ride="carousel">
-	<ol class="carousel-indicators">
-		<li data-target="#homeCarousel" data-slide-to="0" class="active"></li>
-		<li data-target="#homeCarousel" data-slide-to="1"></li>
-		<li data-target="#homeCarousel" data-slide-to="2"></li>
-	</ol>
-
-	<div class="carousel-inner">
-		<div class="carousel-item active">
-			<img src="images/anh1.jpg" class="d-block w-100" alt="Banner 1">
-		</div>
-		<div class="carousel-item">
-			<img src="images/anh4.jpg" class="d-block w-100" alt="Banner 2">
-		</div>
-		<div class="carousel-item">
-			<img src="images/anh5.jpg" class="d-block w-100" alt="Banner 3">
-		</div>
-	</div>
-
-	<a class="carousel-control-prev" href="#homeCarousel" role="button" data-slide="prev">
-		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-		<span class="sr-only">Previous</span>
-	</a>
-	<a class="carousel-control-next" href="#homeCarousel" role="button" data-slide="next">
-		<span class="carousel-control-next-icon" aria-hidden="true"></span>
-		<span class="sr-only">Next</span>
-	</a>
-</div>
-
-
-<h2 style="text-align: center; margin: 20px;">Danh sách sản phẩm</h2>
 <div class="filter">
 	<form action="#" method="get">
 		<select name="category">
 			<option value="">Tất cả danh mục</option>
-			<option th:each="category : ${categories}"
-					th:value="${category.id}"
-					th:text="${category.name}">
-			</option>
+			<option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
 		</select>
 
 		<select name="brand">
 			<option value="">Tất cả thương hiệu</option>
-			<option th:each="brand : ${brands}"
-					th:value="${brand.id}"
-					th:text="${brand.name}">
-			</option>
+			<option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
 		</select>
 
-		<div class="price-range">
-			<label for="minPriceInput">Từ: <input type="number" id="minPriceInput" name="minPrice" value="0" min="0" max="10000" /></label>
-			<label for="maxPriceInput">Đến: <input type="number" id="maxPriceInput" name="maxPrice" value="10000" min="0" max="10000" /></label>
-		</div>
+		<input type="number" name="minPrice" class="form-control" placeholder="Giá thấp nhất" min="0">
+		<input type="number" name="maxPrice" class="form-control" placeholder="Giá cao nhất" min="0">
 
-		<button type="submit">Lọc</button>
+		<button type="submit" class="btn btn-primary">Lọc</button>
 	</form>
 </div>
+
 <div class="products">
-	<div th:each="product : ${products}" class="product-card">
-		<img th:if="${product.image != null}" th:src="${product.image.url}" alt="Product Image" class="product-image" />
-		<h3 th:text="${product.name}">Tên sản phẩm</h3>
-		<p><strong>Giá:</strong> $<span th:text="${product.price}">0.00</span></p>
-		<p th:text="'Thương hiệu: ' + ${product.brand.name}">Thương hiệu</p>
-		<a th:href="@{/products/{id}(id=${product.id})}" class="button">Xem chi tiết</a>
-		<a th:href="@{/cart/add/{id}(id=${product.id})}" class="button">Thêm vào giỏ hàng</a>
+	<div th:each="product, iterStat : ${products}" th:if="${iterStat.index < 8}" class="product-card">
+		<img th:src="${product.image?.url}" alt="Product Image">
+		<h3 th:text="${product.name}"></h3>
+		<p><strong>Giá:</strong> $<span th:text="${product.price}"></span></p>
+		<p th:text="'Thương hiệu: ' + ${product.brand.name}"></p>
+		<div>
+			<a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-primary">Xem chi tiết</a>
+			<a th:href="@{/cart/add/{id}(id=${product.id})}" class="btn btn-success">Thêm vào giỏ hàng</a>
+		</div>
 	</div>
 </div>
 
+
 <div class="pagination">
-	<a th:each="i : ${#numbers.sequence(1, totalPages)}" th:href="@{/home(page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'active' : ''">1</a>
+	<a th:each="i : ${#numbers.sequence(1, totalPages)}" th:href="@{/home(page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'active' : ''"></a>
 </div>
 
 <div class="footer">

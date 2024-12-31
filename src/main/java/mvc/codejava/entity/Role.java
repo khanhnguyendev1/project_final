@@ -1,6 +1,6 @@
 package mvc.codejava.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
@@ -13,7 +13,7 @@ public class Role {
 
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private List<User> users;
 
     public Long getId() {
@@ -38,5 +38,10 @@ public class Role {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

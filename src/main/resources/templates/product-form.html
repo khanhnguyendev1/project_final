@@ -74,7 +74,7 @@
 <body>
 <div class="form-container">
     <h2 th:text="${#strings.isEmpty(product.id) ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h2>
-    <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/admin/products/add}" method="post" enctype="multipart/form-data">
         <!-- Tên sản phẩm -->
         <div class="form-group">
             <label for="productName">Tên sản phẩm:</label>

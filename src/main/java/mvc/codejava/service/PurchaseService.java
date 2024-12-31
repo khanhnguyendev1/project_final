@@ -3,6 +3,7 @@ package mvc.codejava.service;
 import mvc.codejava.entity.Purchase;
 import mvc.codejava.entity.User;
 import mvc.codejava.repository.PurchaseRepository;
+import mvc.codejava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ import java.util.Optional;
 public class PurchaseService {
     @Autowired
     private PurchaseRepository purchaseRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public void savePurchase(Purchase purchase) {
         purchaseRepository.save(purchase);
@@ -44,5 +48,14 @@ public class PurchaseService {
 
     public Purchase findById(Long id) {
         return purchaseRepository.findById(id).orElse(null);
+    }
+
+    public List<Purchase> getAllPurchasesByUser(Long userId) {
+        // Tìm người dùng theo ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        // Trả về danh sách đơn hàng của người dùng
+        return purchaseRepository.findByUser(Optional.ofNullable(user));
     }
 }

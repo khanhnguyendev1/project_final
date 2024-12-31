@@ -18,7 +18,6 @@ public class CustomerService {
     private BCryptPasswordEncoder passwordEncoder;
 
     public User register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
