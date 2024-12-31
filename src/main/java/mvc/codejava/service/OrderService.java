@@ -29,33 +29,22 @@ public class OrderService {
     private PurchaseItemRepository purchaseItemRepository;
 
     public void createOrder(List<Product> items, String paymentMethod, double totalPrice, String couponCode, String cardNumber) {
-        // Tạo đối tượng Purchase mới
         Purchase purchase = new Purchase();
         purchase.setDate(new Date());
-        purchase.setStatus("PENDING");  // Trạng thái ban đầu của đơn hàng
-
-        // Xử lý mã giảm giá (Coupon)
+        purchase.setStatus("PENDING");
         if (couponCode != null && !couponCode.isEmpty()) {
             Coupon coupon = couponRepository.findByCode(couponCode);
             if (coupon != null && coupon.getExpiryDate().after(new Date())) {
                 purchase.setCoupon(coupon);
-                // Áp dụng giảm giá vào tổng giá
                 double discount = totalPrice * (coupon.getDiscount() / 100);
             }
         }
 
-        // Xử lý thanh toán thẻ tín dụng (PaymentHistory)
         PaymentHistory paymentHistory = new PaymentHistory();
         paymentHistory.setPaymentMethod(paymentMethod);
         paymentHistory.setPaymentDate(new Date());
-
-        // Lưu thông tin thanh toán trước
         paymentHistoryRepository.save(paymentHistory);
-
-        // Gán PaymentHistory cho Purchase
         purchase.setPaymentHistory(paymentHistory);
-
-        // Lưu thông tin PurchaseItem
         List<PurchaseItem> purchaseItems = new ArrayList<>();
         for (Product product : items) {
             PurchaseItem purchaseItem = new PurchaseItem();
@@ -64,14 +53,8 @@ public class OrderService {
             purchaseItem.setPurchase(purchase);
             purchaseItems.add(purchaseItem);
         }
-
-        // Gán danh sách PurchaseItem cho Purchase
         purchase.setPurchaseItems(purchaseItems);
-
-        // Lưu Purchase vào cơ sở dữ liệu
         purchaseRepository.save(purchase);
-
-        // Lưu từng PurchaseItem vào cơ sở dữ liệu
         for (PurchaseItem item : purchaseItems) {
             purchaseItemRepository.save(item);
         }

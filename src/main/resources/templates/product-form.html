@@ -75,17 +75,14 @@
 <div class="form-container">
     <h2 th:text="${#strings.isEmpty(product.id) ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h2>
     <form th:action="@{/admin/products/add}" method="post" enctype="multipart/form-data">
-        <!-- Tên sản phẩm -->
         <div class="form-group">
             <label for="productName">Tên sản phẩm:</label>
             <input type="text" id="productName" name="name" placeholder="Nhập tên sản phẩm" required>
         </div>
-        <!-- Giá -->
         <div class="form-group">
             <label for="price">Giá:</label>
             <input type="number" id="price" name="price" placeholder="Nhập giá sản phẩm" required>
         </div>
-        <!-- Danh mục -->
         <div class="form-group">
             <label for="category">Danh mục:</label>
             <select id="category" name="category" required>
@@ -135,7 +132,6 @@
             <label for="screenSize">Kích thước màn hình:</label>
             <input type="text" id="screenSize" name="screenSize" placeholder="Nhập kích thước màn hình">
         </div>
-        <!-- Gửi form -->
         <button type="submit" class="btn-submit">Thêm Sản Phẩm</button>
     </form>
 </div>

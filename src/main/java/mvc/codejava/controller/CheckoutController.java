@@ -67,8 +67,6 @@ public class CheckoutController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Tìm người dùng từ database
         Optional<User> optionalUser = userService.findByEmail(username);
         if (optionalUser.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "User not found. Please login again.");
@@ -109,8 +107,6 @@ public class CheckoutController {
 
         if ("vnpay".equalsIgnoreCase(paymentMethod)) {
             try {
-
-                // Tạo URL thanh toán với id của purchase
                 String successUrl = "http://localhost:8080/checkout/success";
                 String cancelUrl = "http://localhost:8080/checkout/cancel";
                 String paymentUrl = vnPayService.createPaymentUrl(totalPrice, purchase.getId().toString(), successUrl);
@@ -120,7 +116,6 @@ public class CheckoutController {
                 return "redirect:/checkout";
             }
         } else if ("cash".equalsIgnoreCase(paymentMethod)) {
-            // Xử lý thanh toán bằng tiền mặt
             PaymentHistory paymentHistory = new PaymentHistory();
             paymentHistory.setPaymentMethod(paymentMethod);
             paymentHistory.setTotalAmount(purchase.getTotalPrice());
@@ -140,8 +135,8 @@ public class CheckoutController {
 
                 PurchaseItem purchaseItem = new PurchaseItem();
                 purchaseItem.setProduct(product);
-                purchaseItem.setProductName(product.getName()); // Lấy tên sản phẩm
-                purchaseItem.setPriceAtPurchase(product.getPrice()); // Lấy giá sản phẩm tại thời điểm mua
+                purchaseItem.setProductName(product.getName());
+                purchaseItem.setPriceAtPurchase(product.getPrice());
                 purchaseItem.setQuantity(quantity);
                 purchaseItem.setPurchase(purchase);
 

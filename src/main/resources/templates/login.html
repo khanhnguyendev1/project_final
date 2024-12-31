@@ -3,7 +3,6 @@
 <head>
     <title>Đăng nhập</title>
     <style>
-        /* Định dạng chung cho toàn trang */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -15,7 +14,6 @@
             height: 100vh;
         }
 
-        /* Định dạng cho form đăng nhập */
         form {
             background-color: white;
             padding: 20px;
@@ -24,7 +22,6 @@
             width: 300px;
         }
 
-        /* Định dạng cho các nhãn và ô input */
         label {
             display: block;
             margin-bottom: 8px;
@@ -40,7 +37,6 @@
             border-radius: 4px;
         }
 
-        /* Định dạng cho nút đăng nhập */
         button[type="submit"] {
             width: 100%;
             padding: 10px;
@@ -56,7 +52,6 @@
             background-color: #45a049;
         }
 
-        /* Định dạng cho nút đăng ký */
         button {
             margin-top: 10px;
             width: 100%;
@@ -73,13 +68,11 @@
             background-color: #1976D2;
         }
 
-        /* Định dạng cho thông báo lỗi */
         p {
             color: red;
             font-size: 14px;
         }
 
-        /* Canh giữa form */
         .container {
             display: flex;
             justify-content: center;
@@ -93,7 +86,6 @@
     <form th:action="@{/login}" method="post">
         <h2>Đăng nhập</h2>
 
-        <!-- Thông báo lỗi -->
         <p class="error-message" th:if="${param.error}" th:text="'Lỗi: ' + ${param.error}"></p>
         <label for="email">Email:</label>
         <input type="text" id="email" name="username" required/>

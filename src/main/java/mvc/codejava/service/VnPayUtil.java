@@ -32,21 +32,17 @@ public class VnPayUtil {
     }
 
     public static String hashAllFields(Map<String, String> fields, String hashSecret) {
-        // Bỏ qua các trường có giá trị null hoặc rỗng
         String data = fields.entrySet().stream()
                 .filter(entry -> entry.getKey() != null && entry.getValue() != null && !entry.getValue().isEmpty())
                 .sorted(Map.Entry.comparingByKey()) // Sắp xếp theo thứ tự từ điển
                 .map(entry -> entry.getKey() + "=" + entry.getValue()) // Nối key=value
                 .collect(Collectors.joining("&")); // Nối các cặp bằng '&'
 
-        // Thêm hashSecret vào cuối chuỗi
         data += hashSecret;
 
-        // Tạo mã băm SHA256
         return sha256(data);
     }
 
-    // Hàm hỗ trợ tạo mã SHA256
     private static String sha256(String data) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

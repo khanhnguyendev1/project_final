@@ -49,7 +49,7 @@ public class UserController {
             throw new RuntimeException("Người dùng không tồn tại!");
         }
         model.addAttribute("user", user);
-        model.addAttribute("roles", roleRepository.findAll()); // Danh sách vai trò
+        model.addAttribute("roles", roleRepository.findAll());
         return "edit-user";
     }
 
@@ -89,19 +89,13 @@ public class UserController {
 
     @PostMapping("/add")
     public String addUser(@ModelAttribute User user, Model model) {
-
         Role defaultRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
-
-        // Mã hóa mật khẩu và gán role mặc định
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(defaultRole);
-
         if (customerService.register(user) != null) {
             return "redirect:/admin/users";
         }
-
-        // Hiển thị lỗi nếu email đã tồn tại
         model.addAttribute("error", "Email đã tồn tại");
         return "admin-register";
     }

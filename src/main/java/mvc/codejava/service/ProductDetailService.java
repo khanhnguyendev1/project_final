@@ -11,12 +11,10 @@ public class ProductDetailService {
     @Autowired
     private ProductDetailRepository productDetailRepository;
 
-    // Lưu chi tiết sản phẩm vào cơ sở dữ liệu
     public ProductDetail saveProductDetail(ProductDetail productDetail) {
         return productDetailRepository.save(productDetail);
     }
 
-    // Tìm kiếm chi tiết sản phẩm theo ID sản phẩm
     public ProductDetail findByProductId(Long productId) {
         return productDetailRepository.findByProductId(productId);
     }

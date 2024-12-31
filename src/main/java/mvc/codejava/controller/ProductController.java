@@ -56,7 +56,7 @@ public class ProductController {
         Optional<User> user = userRepository.findByEmail(username);
 
         int pageSize = 8; // Số sản phẩm mỗi trang
-        Pageable pageable = PageRequest.of(page - 1, pageSize); // Spring bắt đầu từ 0
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
 
         Page<Product> productPage;
 
@@ -85,9 +85,9 @@ public class ProductController {
         // Thêm dữ liệu vào Model
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("brands", brandService.getAllBrands());
-        model.addAttribute("products", productPage.getContent()); // Danh sách sản phẩm
-        model.addAttribute("currentPage", productPage.getNumber() + 1); // Trang hiện tại
-        model.addAttribute("totalPages", productPage.getTotalPages()); // Tổng số trang
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", productPage.getNumber() + 1);
+        model.addAttribute("totalPages", productPage.getTotalPages());
         model.addAttribute("search", search);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
@@ -128,7 +128,7 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("productDetail", productDetail);
 
-        return "product-details"; // Tên của view (HTML) hiển thị chi tiết sản phẩm
+        return "product-details";
     }
 
     @RequestMapping(value = "/admin/products/add", method = {RequestMethod.GET, RequestMethod.POST})
@@ -172,11 +172,7 @@ public class ProductController {
             productDetail.setScreenSize(screenSize);
             productDetailService.saveProductDetail(productDetail);
             product.setProductDetail(productDetail);
-
-            // Lưu Product
             productService.saveProduct(product);
-
-            // Chuyển hướng về trang chính với thông báo thành công
             redirectAttributes.addFlashAttribute("message", "Sản phẩm đã được thêm thành công!");
             return "redirect:/admin/products";
         }
@@ -184,7 +180,7 @@ public class ProductController {
 
     @GetMapping("/admin/products/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Product product = productService.findById(id); // Lấy sản phẩm từ database
+        Product product = productService.findById(id);
         if (product == null) {
             return "redirect:/admin/products";
         }

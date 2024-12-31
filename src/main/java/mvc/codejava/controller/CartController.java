@@ -109,12 +109,12 @@ public class CartController {
 
         if (cartItems.isEmpty()) {
             model.addAttribute("error", "Giỏ hàng của bạn đang trống");
-            return "cart"; // Quay lại giỏ hàng nếu không có sản phẩm
+            return "cart";
         }
 
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", cartService.calculateTotal());
 
-        return "checkout"; // Tới trang thanh toán
+        return "checkout";
     }
 }

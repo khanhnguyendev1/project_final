@@ -38,17 +38,11 @@ public class AuthController {
     public String registerCustomer(@ModelAttribute User user, Model model) {
         Role defaultRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
-
-        // Mã hóa mật khẩu và gán role mặc định
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(defaultRole);
-
-        // Lưu người dùng thông qua service
         if (customerService.register(user) != null) {
             return "redirect:/login";
         }
-
-        // Hiển thị lỗi nếu email đã tồn tại
         model.addAttribute("error", "Email đã tồn tại");
         return "register";
     }

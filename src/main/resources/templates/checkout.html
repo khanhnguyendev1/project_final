@@ -217,7 +217,7 @@
         const paymentMethod = document.getElementById("paymentMethod").value;
 
         if (paymentMethod === "vnpay") {
-            event.preventDefault(); // Prevent default submission when VNPAY is selected
+            event.preventDefault();
             fetch('/checkout/complete', {
                 method: 'POST',
                 headers: {

@@ -51,9 +51,9 @@
 
 		.products {
 			display: grid;
-			grid-template-columns: repeat(4, 1fr); /* Luôn chia thành 4 cột */
-			gap: 30px; /* Tăng khoảng cách giữa các sản phẩm */
-			margin: 20px 20px 40px; /* Thêm khoảng cách dưới để tách sản phẩm và phân trang */
+			grid-template-columns: repeat(4, 1fr);
+			gap: 30px;
+			margin: 20px 20px 40px;
 		}
 
 		.product-card {
@@ -63,11 +63,11 @@
 			padding: 15px;
 			text-align: center;
 			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-			width: 100%; /* Đảm bảo các sản phẩm có cùng kích thước */
-			height: 380px; /* Cố định chiều cao để các sản phẩm đều nhau */
+			width: 100%;
+			height: 380px;
 			display: flex;
-			flex-direction: column; /* Sắp xếp các phần tử theo cột */
-			justify-content: space-between; /* Tách phần nút ra xa phần nội dung */
+			flex-direction: column;
+			justify-content: space-between;
 		}
 
 		.product-card img {
@@ -75,7 +75,7 @@
 			height: 180px;
 			object-fit: cover;
 			border-radius: 5px;
-			margin-bottom: 10px; /* Khoảng cách giữa ảnh và tên sản phẩm */
+			margin-bottom: 10px;
 		}
 
 		.product-card h3 {
@@ -89,14 +89,14 @@
 		}
 
 		.product-card .btn {
-			margin: 5px 0; /* Khoảng cách giữa các nút */
+			margin: 5px 0;
 		}
 
 		.pagination {
 			display: flex;
 			justify-content: center;
 			margin: 20px 0;
-			gap: 10px; /* Tăng khoảng cách giữa các nút phân trang */
+			gap: 10px;
 		}
 		.pagination a {
 			margin: 0 5px;
@@ -186,18 +186,15 @@
 
 <div class="container">
 	<div class="content">
-		<!-- Thanh tìm kiếm -->
 		<form method="get" action="/home" class="input-group w-50">
 			<input type="text" name="search" th:value="${search}" class="form-control" placeholder="Tìm kiếm sản phẩm...">
 			<button class="btn btn-primary" type="submit">Tìm</button>
 		</form>
 
-		<!-- Nút giỏ hàng -->
 		<a href="/cart" class="btn btn-primary">
 			<i class="bi bi-cart"></i> Cart
 		</a>
 
-		<!-- Menu người dùng -->
 		<div class="dropdown">
 			<button class="btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 				Xin chào, <span th:text="${fullName}">Tên người dùng</span>

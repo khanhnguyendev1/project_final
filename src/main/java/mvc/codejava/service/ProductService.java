@@ -29,7 +29,6 @@ public class ProductService {
     private PurchaseItemRepository purchaseItemRepository;
 
     public void saveProduct(Product product) {
-        // Lưu sản phẩm vào cơ sở dữ liệu
         productRepository.save(product);
     }
 
@@ -50,19 +49,15 @@ public class ProductService {
         }
     }
 
-    // Xóa sản phẩm
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
-
-        // Xóa tham chiếu product khỏi tất cả các PurchaseItem liên quan
         List<PurchaseItem> purchaseItems = purchaseItemRepository.findByProduct(product);
         for (PurchaseItem item : purchaseItems) {
             item.setProduct(null);
             purchaseItemRepository.save(item);
         }
 
-        // Sau khi xóa tham chiếu, xóa sản phẩm
         productRepository.delete(product);;
     }
 

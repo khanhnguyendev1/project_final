@@ -147,7 +147,6 @@
 			margin-top: 20px;
 		}
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .form-container {
                 padding: 15px;
@@ -177,32 +176,27 @@
 <h1>Cập Nhật Sản Phẩm</h1>
 <div class="form-container">
     <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
-        <!-- Tên sản phẩm -->
         <div class="form-group">
             <label for="name">Tên Sản Phẩm:</label>
             <input type="text" id="name" th:field="*{name}" placeholder="Nhập tên sản phẩm" required />
         </div>
 
-        <!-- Giá sản phẩm -->
         <div class="form-group">
             <label for="price">Giá Sản Phẩm:</label>
             <input type="number" id="price" th:field="*{price}" placeholder="Nhập giá sản phẩm" required />
         </div>
 
-        <!-- Ảnh sản phẩm -->
         <div class="form-group">
             <label for="imageFile">Ảnh:</label>
             <input type="file" id="imageFile" name="imageFile" accept="image/*" />
             <img th:if="${product.image.url != null}" th:src="${product.image.url}" alt="Product Image" />
         </div>
 
-        <!-- Mô tả sản phẩm -->
         <div class="form-group">
             <label for="description">Mô Tả Sản Phẩm:</label>
             <textarea id="description" th:field="*{description}" placeholder="Nhập mô tả sản phẩm"></textarea>
         </div>
 
-        <!-- Thương hiệu -->
         <div class="form-group">
             <label for="brand">Thương Hiệu:</label>
             <select id="brand" th:field="*{brand.id}" required>
@@ -214,13 +208,11 @@
             </select>
         </div>
 
-        <!-- Số lượng -->
         <div class="form-group">
             <label for="stock">Số Lượng:</label>
             <input type="number" id="stock" th:field="*{stock}" placeholder="Nhập số lượng sản phẩm" required />
         </div>
 
-        <!-- Danh mục -->
         <div class="form-group">
             <label for="category">Danh Mục:</label>
             <select id="category" th:field="*{category.id}" required>
@@ -232,7 +224,6 @@
             </select>
         </div>
 
-        <!-- Nút cập nhật -->
         <button type="submit">Cập Nhật Sản Phẩm</button>
     </form>
     <button type="button" onclick="window.location.href='/admin/products'">

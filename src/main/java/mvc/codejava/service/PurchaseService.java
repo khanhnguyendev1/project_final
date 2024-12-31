@@ -31,7 +31,6 @@ public class PurchaseService {
     }
 
     public Purchase updatePurchase(Purchase updatedPurchase) {
-        // Ensure the purchase exists before updating
         Optional<Purchase> existingPurchase = purchaseRepository.findById(updatedPurchase.getId());
         if (existingPurchase.isPresent()) {
             Purchase purchase = existingPurchase.get();
@@ -51,11 +50,8 @@ public class PurchaseService {
     }
 
     public List<Purchase> getAllPurchasesByUser(Long userId) {
-        // Tìm người dùng theo ID
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-
-        // Trả về danh sách đơn hàng của người dùng
         return purchaseRepository.findByUser(Optional.ofNullable(user));
     }
 }

@@ -13,9 +13,7 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
-    // Lưu hình ảnh vào cơ sở dữ liệu (giả sử lưu URL của hình ảnh)
     public void saveImage(Image image) {
-        // Lưu đối tượng Image vào cơ sở dữ liệu
         imageRepository.save(image);
     }
 }

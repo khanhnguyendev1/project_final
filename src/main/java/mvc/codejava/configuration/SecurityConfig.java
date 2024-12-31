@@ -65,18 +65,13 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customSuccessHandler() {
         return (request, response, authentication) -> {
-            // Lấy danh sách role của người dùng
             var authorities = authentication.getAuthorities();
-
-            // Kiểm tra role và đặt URL chuyển hướng
-            String redirectUrl = "/home"; // Mặc định chuyển hướng đến /home
+            String redirectUrl = "/home";
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                redirectUrl = "/admin/dashboard"; // Chuyển hướng cho admin
+                redirectUrl = "/admin/dashboard";
             } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))) {
-                redirectUrl = "/home"; // Chuyển hướng cho user
+                redirectUrl = "/home";
             }
-
-            // Chuyển hướng
             response.sendRedirect(redirectUrl);
         };
     }

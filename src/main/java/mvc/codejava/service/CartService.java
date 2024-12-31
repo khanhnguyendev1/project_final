@@ -26,7 +26,6 @@ public class CartService {
         cartItems.remove(product);
     }
 
-    // Giảm số lượng sản phẩm trong giỏ hàng
     public void decreaseProductQuantity(Product product) {
         int currentQuantity = cartItems.getOrDefault(product, 0);
         if (currentQuantity > 1) {
@@ -36,7 +35,6 @@ public class CartService {
         }
     }
 
-    // Tính tổng giá trị của giỏ hàng
     public double calculateTotal() {
         double total = cartItems.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue())
@@ -49,12 +47,10 @@ public class CartService {
         return total - discount;
     }
 
-    // Áp dụng mã giảm giá
     public void applyDiscount(Coupon coupon) {
         this.discount = coupon.getDiscount();
     }
 
-    // Xóa tất cả sản phẩm trong giỏ hàng
     public void clearCart() {
         cartItems.clear();
         discount = 0.0;

@@ -12,17 +12,14 @@ public class BrandService {
     @Autowired
     private BrandRepository brandRepository;
 
-    // Lấy tất cả thương hiệu
     public List<Brand> getAllBrands() {
         return brandRepository.findAll();
     }
 
-    // Lấy thương hiệu theo id
     public Brand getBrandById(Long id) {
         return brandRepository.findById(id).orElse(null);
     }
 
-    // Lưu thương hiệu mới hoặc cập nhật thương hiệu
     public Brand saveBrand(Brand brand) {
         return brandRepository.save(brand);
     }
